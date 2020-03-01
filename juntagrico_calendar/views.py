@@ -61,8 +61,8 @@ def jobs_as_json(request):
         {
             'id': str(job.id) + 's' if search else str(job.id),
             'title': job.type.get_name,
-            'start': job.time,
-            'end': job.time + timedelta(hours=job.type.duration),
+            'start': timezone.make_naive(job.time),
+            'end': timezone.make_naive(job.time) + timedelta(hours=job.type.duration),
             'url': reverse('job', args=(job.id,)),
             'classNames': [cls for cls, cond in {
                 'past': job.time < now,

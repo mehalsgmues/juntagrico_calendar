@@ -58,6 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }],
         eventColor: '#66cc66',
         locale: 'de',
+        timeZone: false,  // use system timezone
         header: {
             left: 'title',
             center: 'list7,dayGridMonth',
