@@ -1,1 +1,3 @@
+django
 juntagrico==1.2.2
+iso8601==0.1.12

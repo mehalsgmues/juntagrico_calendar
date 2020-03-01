@@ -16,12 +16,12 @@ def get_requirements(requirements_file):
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
-    name='calendar',
+    name='juntagrico_calendar',
     version='0.0.1',
     packages=find_packages(),
     include_package_data=True,
     license='LPGLv3',  # example license
-    description='calendar',
+    description='juntagrico_calendar',
     long_description=README,
     url='http://juntagrico.org',
     author='juntagrico',

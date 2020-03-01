@@ -1,5 +1,6 @@
 include LICENSE
 include README.md
-recursive-include calendar/templates *
+recursive-include juntagrico_calendar/static *
+recursive-include juntagrico_calendar/templates *
 include requirements.txt
 global-exclude *.pyc

@@ -5,7 +5,7 @@ Basic Installation
 ------------------
 Install calendar with :command:`pip`::
 
-    $ pip install calendar
+    $ pip install juntagrico_calendar
 
 Django Settings
 ---------------
@@ -16,6 +16,6 @@ You have to add the app to your installed apps in your Django settings
     INSTALLED_APPS = [
         ...
         'juntagrico',
-        'calendar',
+        'juntagrico_calendar',
     ]
     
