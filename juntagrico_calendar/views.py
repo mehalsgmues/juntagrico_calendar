@@ -57,12 +57,18 @@ def jobs_as_json(request):
         else:
             return ''
 
+    def duration(job):
+        """compatibility for juntagrico 1.2.2 and 1.2.3"""
+        if hasattr(job, 'duration'):
+            return job.duration  # juntagrico >=1.2.3
+        return job.type.duration  # juntagrico <=1.2.2
+
     events = [
         {
             'id': str(job.id) + 's' if search else str(job.id),
             'title': job.type.get_name,
             'start': timezone.make_naive(job.time),
-            'end': timezone.make_naive(job.time) + timedelta(hours=job.type.duration),
+            'end': timezone.make_naive(job.time) + timedelta(hours=duration(job)),
             'url': reverse('job', args=(job.id,)),
             'classNames': [cls for cls, cond in {
                 'past': job.time < now,
