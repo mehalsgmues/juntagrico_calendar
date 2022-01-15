@@ -16,7 +16,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'juntagrico',
-    'calendar',
+    'juntagrico_calendar',
 ]
 
 DATABASES = {
@@ -97,6 +97,7 @@ TEMPLATES = [
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',
             ],
             'loaders': [
                 'django.template.loaders.filesystem.Loader',
@@ -123,3 +124,6 @@ CACHES = {
             'TIMEOUT': None,
         }
     }
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+CRISPY_FAIL_SILENTLY = not DEBUG

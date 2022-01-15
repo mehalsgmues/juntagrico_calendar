@@ -19,3 +19,8 @@ You have to add the app to your installed apps in your Django settings
         'juntagrico_calendar',
     ]
     
+In the urls.py add this **before** including the juntagrico.urls:
+
+.. code-block:: python
+
+    path(r'', include('juntagrico_calendar.urls')),
