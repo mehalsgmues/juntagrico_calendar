@@ -68,7 +68,7 @@ def jobs_as_json(request):
                 'area': job.type.activityarea.name,
                 'location': job.type.location,
                 'summary': text_ellipsis(job.type.description, 75),
-                'occupied_places': job.occupied_places(),
+                'occupied_places': job.occupied_slots,
                 'slots': job.slots,
                 'search_result': search_result_context(job)
             },
