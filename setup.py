@@ -17,7 +17,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='juntagrico_calendar',
-    version='1.4.0',
+    version='1.4.1',
     packages=find_packages(),
     include_package_data=True,
     license='LPGLv3',  # example license
