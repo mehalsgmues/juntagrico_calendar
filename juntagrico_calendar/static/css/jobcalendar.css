@@ -51,7 +51,7 @@
     background-color: transparent !important;
 }
 #jobs_calendar .canceled .fc-title,
-#jobs_calendar .canceled .fc-list-item-title {
+#jobs_calendar .canceled .fc-list-item-title * {
     text-decoration: line-through;
 }
 
