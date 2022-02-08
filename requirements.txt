@@ -1,2 +1,2 @@
-juntagrico~=1.4.6
+juntagrico~=1.5.0
 iso8601==1.0.2

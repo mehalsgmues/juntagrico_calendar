@@ -66,7 +66,7 @@ def jobs_as_json(request):
             }.items() if cond],
             'extendedProps': {
                 'area': job.type.activityarea.name,
-                'location': job.type.location,
+                'location': str(job.type.location),
                 'summary': text_ellipsis(job.type.description, 75),
                 'occupied_places': job.occupied_slots,
                 'slots': job.slots,

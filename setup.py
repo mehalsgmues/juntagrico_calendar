@@ -1,23 +1,27 @@
 import os
 from setuptools import find_packages, setup
 
+import juntagrico_calendar
+
 ROOT_DIR = os.path.dirname(__file__)
 SOURCE_DIR = os.path.join(ROOT_DIR)
 
 with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
     README = readme.read()
 
+
 def get_requirements(requirements_file):
     with open(requirements_file) as f:
         required = [line.split('#')[0] for line in f.read().splitlines()]
     return required
 
+
 # allow setup.py to be run from any path
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
-    name='juntagrico_calendar',
-    version='1.4.1',
+    name=juntagrico_calendar.name,
+    version=juntagrico_calendar.version,
     packages=find_packages(),
     include_package_data=True,
     license='LPGLv3',  # example license
