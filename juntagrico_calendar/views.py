@@ -7,11 +7,13 @@ from django.urls import reverse
 from django.utils import timezone
 
 from juntagrico.entity.jobs import JobType, RecuringJob, OneTimeJob, Job
+from juntagrico.view_decorators import highlighted_menu
 
 from juntagrico_calendar.util.temporal import get_datetime_from_iso8601_string
 
 
 @login_required
+@highlighted_menu('jobs')
 def job_calendar(request):
     """
     Job calendar/agenda view

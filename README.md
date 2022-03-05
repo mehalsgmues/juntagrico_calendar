@@ -9,8 +9,17 @@ For more information information about how to install this app hop over to the d
 
 ## 1.4
 
-Upgrade to Juntagrico 1.4
+* Upgrade to Juntagrico 1.4
 
 ### 1.4.1
 
 * Compatibility to Juntagrico 1.4.6
+
+## 1.5
+
+* Compatibility to Juntagrico 1.5
+* Fix strike through on cancelled jobs in agenda view
+
+### 1.5.1
+
+* Fix job submenu
