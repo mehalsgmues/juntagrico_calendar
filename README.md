@@ -3,17 +3,14 @@
 This is an extension for juntagrico. You can find more information about juntagrico here
 (https://github.com/juntagrico/juntagrico)
 
-For more information information about how to install this app hop over to the doc section of the repo.
+## Installation
+
+1. Add `juntagrico-calendar` to your `requirements.txt`
+2. Add `'juntagrico_calendar',` to the `INSTALLED_APPS` in your `settings.py` **above** `juntagrico`
+3. Add `path('', include('juntagrico_calendar.urls')),` in your `urls.py` **above** the juntagrico urls
+4. Redeploy your project (and apply migrations)
 
 ## Release Notes
-
-## 1.4
-
-* Upgrade to Juntagrico 1.4
-
-### 1.4.1
-
-* Compatibility to Juntagrico 1.4.6
 
 ## 1.5
 
@@ -23,3 +20,11 @@ For more information information about how to install this app hop over to the d
 ### 1.5.1
 
 * Fix job submenu
+
+## 1.4
+
+* Upgrade to Juntagrico 1.4
+
+### 1.4.1
+
+* Compatibility to Juntagrico 1.4.6

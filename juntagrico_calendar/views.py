@@ -34,7 +34,7 @@ def jobs_as_json(request):
 
     if search is None:
         jobs = Job.objects.filter(time__range=(start, end))
-    elif search is not '':
+    elif search != '':
         # if search term is passed, only search in parts, that frontend can't find
         jobtypes = JobType.objects.filter(recuringjob__time__range=(start, end))\
             .distinct().filter(description__iregex=search)

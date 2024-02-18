@@ -1,3 +1,6 @@
 {% load i18n %}
-<div id="job_search"><label>{% trans "Suchen:" %}</label> <input type="search" class="form-control input-sm" placeholder="{% trans "Suchen" %}"></div>
+<div id="job_search">
+    <label for="job_search_field">{% trans "Suchen:" %}</label>
+    <input id="job_search_field" type="search" class="form-control input-sm" placeholder="{% trans "Suchen" %}">
+</div>
 <div id="jobs_calendar"></div>

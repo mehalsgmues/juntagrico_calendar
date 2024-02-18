@@ -1,9 +1,10 @@
-<script type="text/javascript" src='/static/external/fullcalendar/core/main.min.js'></script>
-<script type="text/javascript" src='/static/external/fullcalendar/bootstrap/main.min.js'></script>
-<script type="text/javascript" src='/static/external/fullcalendar/daygrid/main.min.js'></script>
-<script type="text/javascript" src='/static/external/fullcalendar/list/main.min.js'></script>
-<script type="text/javascript" src='/static/external/fullcalendar/core/locales/de.js'></script>
+{% load static %}
+<script type="text/javascript" src='{% static "external/fullcalendar/core/main.min.js" %}'></script>
+<script type="text/javascript" src='{% static "external/fullcalendar/bootstrap/main.min.js" %}'></script>
+<script type="text/javascript" src='{% static "external/fullcalendar/daygrid/main.min.js" %}'></script>
+<script type="text/javascript" src='{% static "external/fullcalendar/list/main.min.js" %}'></script>
+<script type="text/javascript" src='{% static "external/fullcalendar/core/locales/de.js" %}'></script>
 <script>
     var json_job_url = '{% url "jobs-json" %}'
 </script>
-<script type="text/javascript" src='/static/js/jobcalendar.js'></script>
+<script type="text/javascript" src='{% static "js/jobcalendar.js" %}'></script>
