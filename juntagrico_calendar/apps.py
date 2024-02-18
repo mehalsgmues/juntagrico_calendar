@@ -1,7 +1,7 @@
 from django.apps import AppConfig
 
 
-class JuntagricoAssignmentRequestAppconfig(AppConfig):
+class JuntagricoCalendarAppconfig(AppConfig):
     name = "juntagrico_calendar"
 
     def ready(self):
