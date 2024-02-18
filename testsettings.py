@@ -15,8 +15,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
-    'juntagrico',
     'juntagrico_calendar',
+    'juntagrico',
 ]
 
 DATABASES = {
@@ -49,8 +49,8 @@ EMAIL_PORT = os.environ.get('JUNTAGRICO_EMAIL_PORT', 2525 )
 EMAIL_USE_TLS = os.environ.get('JUNTAGRICO_EMAIL_TLS', False)
 
 
-
 WHITELIST_EMAILS = []
+
 
 def whitelist_email_from_env(var_env_name):
     email = os.environ.get(var_env_name)
@@ -78,7 +78,7 @@ USE_I18N = True
 # calendars according to the current locale.
 USE_L10N = True
 
-DATE_INPUT_FORMATS =['%d.%m.%Y',]
+DATE_INPUT_FORMATS = ['%d.%m.%Y',]
 
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
@@ -103,27 +103,14 @@ TEMPLATES = [
                 'django.template.loaders.filesystem.Loader',
                 'django.template.loaders.app_directories.Loader'
             ],
-            'debug' : True
+            'debug': True
         },
     },
 ]
 
-LOGIN_REDIRECT_URL = "/my/home"
+LOGIN_REDIRECT_URL = "/"
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
-
-
-GOOGLE_API_KEY = 'AIzaSyCcii4Z71qyky54kEQtRhFbB_z-2zbSU28'
-
-BILLING = True
-
-CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-            'LOCATION': 'juntagrico_app_cache_table',
-            'TIMEOUT': None,
-        }
-    }
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 CRISPY_FAIL_SILENTLY = not DEBUG
