@@ -17,6 +17,12 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'juntagrico_calendar',
     'juntagrico',
+    'fontawesomefree',
+    'import_export',
+    'impersonate',
+    'adminsortable2',
+    'polymorphic',
+    'crispy_forms',
 ]
 
 DATABASES = {

@@ -5,26 +5,30 @@ This is an extension for juntagrico. You can find more information about juntagr
 
 ## Installation
 
-1. Add `juntagrico-calendar` to your `requirements.txt`
-2. Add `'juntagrico_calendar',` to the `INSTALLED_APPS` in your `settings.py` **above** `juntagrico`
-3. Add `path('', include('juntagrico_calendar.urls')),` in your `urls.py` **above** the juntagrico urls
-4. Redeploy your project (and apply migrations)
+Install juntagrico-calendar via `pip`
 
-## Release Notes
+    $ pip install juntagrico-calendar
 
-## 1.5
+or add it in your projects `requirements.txt`
 
-* Compatibility to Juntagrico 1.5
-* Fix strike through on cancelled jobs in agenda view
+In `settings.py` add `'juntagrico_calendar'`, somewhere **above** `'juntagrico',`.
 
-### 1.5.1
+```python
+INSTALLED_APPS = [
+    ...
+    'juntagrico_calendar',
+    'juntagrico',
+]
+```
 
-* Fix job submenu
+In your `urls.py` you also need to extend the pattern (**above** the juntagrico urls):
 
-## 1.4
+```python
+urlpatterns = [
+    ...
+    path('', include('juntagrico_calendar.urls')),
+    # include juntagrico urls below
+]
+```
 
-* Upgrade to Juntagrico 1.4
-
-### 1.4.1
-
-* Compatibility to Juntagrico 1.4.6
+Redeploy your project (and apply migrations)

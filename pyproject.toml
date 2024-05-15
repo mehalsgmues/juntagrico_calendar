@@ -12,8 +12,8 @@ readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.8"
 dependencies = [
-    "juntagrico>=1.6.0rc4",
-    "iso8601>=1.0.2",
+    "juntagrico>=1.6.0",
+    "iso8601>=1.0.2,<2.0",
 ]
 classifiers = [
     'Development Status :: 5 - Production/Stable',
