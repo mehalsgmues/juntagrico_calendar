@@ -1,0 +1,121 @@
+.job-year-title, .job-month-title, .job-day-title {
+    position: sticky;
+    background-color: #fefffa;
+}
+
+.job-year-title {
+    top: 3.5rem;
+    margin-left: 2rem;
+    font-size: 1rem;
+    max-width: calc(16.666667% - 2rem);
+}
+
+.job-month-title {
+    top: 1.1rem;
+    margin-left: 2rem;
+    margin-bottom: -6.4rem;
+    max-width: calc(16.666667% - 2rem);
+}
+
+.job-day-title {
+    top: 0;
+}
+
+.job-month {
+    margin-bottom: 3rem;
+}
+
+.job-day {
+    margin-top: 5rem;
+}
+
+.card-progress {
+    border-radius: 0 0 .25rem .25rem;
+}
+
+.card-progress .progress-bar {
+    text-align: left;
+    padding: 0 1rem;
+    min-width: 4rem;
+}
+
+.job-time {
+    font-size: 150%;
+    line-height: 1.2;
+}
+
+.job-is-core {
+    vertical-align: initial;
+}
+
+.job-details.border-primary::before {
+    content: '';
+    width: 0;
+    height: 0;
+    border-width: 1.2rem;
+    border-style: solid;
+    border-color: #66cc66 transparent transparent #66cc66;
+    border-radius: .15rem 0 0 0;
+    margin-bottom: -2.4rem;
+}
+
+.job-full.job-details.border-primary::before {
+    border-width: 0;
+    margin-bottom: 0;
+}
+
+.job-full .job-area, .job-full .job-location {
+    display: none;
+}
+
+.job-full p {
+    font-size: 1rem;
+}
+
+.job-full .job-time {
+    font-size: .75em;
+    margin: 0;
+    line-height: initial;
+}
+
+.job-full .job-time-sep {
+    display: initial;
+}
+
+.job-full .card-progress {
+    height: 3px;
+}
+
+.job-full .card-progress .progress-bar {
+    color: transparent;
+}
+
+.job-day-sep::before,
+.job-day-sep::after {
+    background-color: #21252988;
+    content: "";
+    display: inline-block;
+    height: 1px;
+    position: relative;
+    vertical-align: middle;
+    width: 10%;
+    margin: 0 3%;
+}
+
+#calendar-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #fefffa;
+}
+
+.calendar-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 0.5rem;
+    margin: 0 auto;
+}
+
+.calendar-drowpdown {
+    width: max-content;
+}

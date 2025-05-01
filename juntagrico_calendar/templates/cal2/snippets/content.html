@@ -1,0 +1,119 @@
+{% load l10n %}
+{% load cal.time %}
+{% load juntagrico.config %}
+{% load i18n %}
+
+{% include "./toolbar.html" %}
+
+<div id="jobs_calendar">
+    {% regroup jobs by time.date.year as jobs_by_year %}
+    {% for year in jobs_by_year %}
+        <div class="job-year job-year-{{ year.grouper }}">
+            <h2 class="job-year-title d-none">{{ year.grouper }}</h2>  {# TODO: cleanup #}
+
+            {% regroup year.list by time.date|date:'F' as jobs_by_month %}
+            {% for month in jobs_by_month %}
+                <div id="job-month-{{ month.grouper }}-{{ year.grouper }}" class="job-month job-month-{{ month.grouper }}"
+                     data-title="{{ month.grouper }}" data-year="{{ year.grouper }}">
+                    <div class="job-month-title d-none"> {# TODO: cleanup #}
+                        <p class="h3 job-month-title-text">{{ month.grouper }}</p>
+                    </div>
+                    {% regroup month.list by time.date as jobs_by_day %}
+                    {% for day in jobs_by_day %}
+                        <div class="job-day job-day-{{ day.grouper|date:'D' }}">
+                            <div class="job-day-title float-left d-none"> {# TODO: cleanup #}
+                                <strong>{{ day.grouper|date:'D' }}</strong>
+                                <br>
+                                {{ day.grouper|date:'j' }}.
+                            </div>
+                            <div class="text-center mb-4 job-day-header">
+                                <h4>
+                                    {{ day.grouper|date:'D j. F Y'|upper }}
+                                </h4>
+                            </div>
+                            {% for job in day.list %}
+                                {% with status=job.status_percentage %}
+                                    {% ifchanged %}
+                                        {% if job.time|get_local_hour >= 12 %}
+                                            <div class="text-center mb-3 job-day-sep">
+                                                <i class="fa-regular fa-sun"></i>
+                                            </div>
+                                        {% endif %}
+                                    {% endifchanged %}
+                                    <div class="job-details mb-3 card{% if job.type.activityarea.core %} border-primary{% endif %}{% if status == 100 %} job-full{% endif %}"
+                                         data-start-time="{{ job.time|get_local_hour|unlocalize }}"
+                                         data-end-time="{{ job.end_time|get_local_hour|unlocalize }}"
+                                         data-area="{{ job.type.activityarea.id }}">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-lg-2">
+                                                    <p class="job-time mb-1 text-lg-right">
+                                                        <strong>{{ job.time|date:'H:i' }}</strong>
+                                                        <small class="job-time-sep d-lg-none">-</small>
+                                                        <small>{{ job.end_time|date:'H:i' }}</small>
+                                                    </p>
+                                                </div>
+                                                <div class="col-lg-10 position-static">
+                                                    <p class="job-title h4 mb-1 mb-lg-0 card-title">
+                                                        <a href="{% url 'job' job.id %}" class="stretched-link">
+                                                            {{ job.type.get_name }}
+                                                        </a>
+                                                    </p>
+                                                    <p class="job-area mb-0">
+                                                        {% if job.type.activityarea.core %}
+                                                            <img alt="{% trans "Kernbereich" %}"
+                                                                 src="{% images "core" %}"
+                                                                 class="job-is-core"/>
+                                                        {% endif %}
+                                                        <span class="text-muted">{{ job.type.activityarea }}</span>
+                                                    </p>
+                                                    <p class="job-location mb-0">
+                                                        <i class="fa-solid fa-location-dot"></i>
+                                                        {{ job.type.location }}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="progress card-progress">
+                                            <div class="progress-bar
+                                                    {% if status < 25 %}
+                                                        bg-danger
+                                                    {% elif status < 100 %}
+                                                        bg-warning
+                                                    {% else %}
+                                                        bg-success
+                                                    {% endif %}"
+                                                 role="progressbar"
+                                                 style="width: {{ status|floatformat:0 }}%;"
+                                                 aria-valuenow="{{ job.occupied_slots }}"
+                                                 aria-valuemin="0"
+                                                 aria-valuemax="{{ job.slots }}">
+                                                {{ job.occupied_slots }} / {{ job.slots }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% if forloop.last and job.time|get_local_hour < 12 %}
+                                        <div class="text-center mb-3 job-day-sep">
+                                            <i class="fa-regular fa-sun"></i>
+                                        </div>
+                                        <div class="text-center mt-5 mb-5 no-job-sep">
+                                            {% with "seedling tree leaf clover water cow bugs worm spider frog dove crow locust dog cat" as nature %}
+                                                <i class="fa-solid fa-{{ nature.split|random }} lead"></i>
+                                            {% endwith %}
+                                        </div>
+                                    {% endif %}
+                                {% endwith %}
+                            {% endfor %}
+                            <div class="text-center mb-3 job-day-sep">
+                                <i class="fa-regular fa-moon"></i>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    {% empty %}
+        {% trans "Es gibt keine bevorstehenden Einsätze" %}
+    {% endfor %}
+</div>

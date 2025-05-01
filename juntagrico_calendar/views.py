@@ -1,3 +1,4 @@
+import datetime
 import re
 from datetime import timedelta
 from django.contrib.auth.decorators import login_required
@@ -18,7 +19,13 @@ def job_calendar(request):
     """
     Job calendar/agenda view
     """
-    return render(request, 'cal/job_calendar.html')
+    # TODO: only show full jobs by default to people that coordinate areas or can create/edit jobs
+    today = datetime.date.today()
+    jobs = Job.objects.filter(time__date__gte=today).order_by('time')
+    return render(request, 'cal/job_calendar.html', {
+        'jobs': Job.objects.filter(time__date__gte=today).order_by('time')[:100],
+        'total_count': jobs.count(),
+    })
 
 
 @login_required
@@ -78,3 +85,17 @@ def jobs_as_json(request):
         for job in jobs
     ]
     return JsonResponse(events, safe=False)
+
+
+@login_required
+@highlighted_menu('jobs')
+def job_calendar2(request):
+    """
+    Job calendar/agenda view
+    """
+    # TODO: only show full jobs by default to people that coordinate areas or can create/edit jobs
+    today = datetime.date.today()
+    jobs = Job.objects.filter(time__date__gte=today).order_by('time')
+    return render(request, 'cal2/job_calendar.html', {
+        'jobs': jobs[:100],
+    })

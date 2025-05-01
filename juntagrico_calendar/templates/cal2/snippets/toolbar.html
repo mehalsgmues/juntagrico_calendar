@@ -1,0 +1,166 @@
+{% load cal.time %}
+{% load juntagrico.config %}
+{% load i18n %}
+
+<div id="calendar-toolbar" class="py-2">
+    <div class="btn-toolbar mb-2" role="toolbar" aria-label="Toolbar with button groups">
+        <div id="job_search" class="mr-2 mb-2">
+            <label class="sr-only" for="job_search_field">{% trans "Suchen" %}</label>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="fa fa-search"></i></div>
+                </div>
+                <input id="job_search_field" type="search" class="form-control input-sm"
+                       placeholder="{% trans "Suchen" %}">
+            </div>
+        </div>
+
+        <div class="d-inline-flex">
+            <div class="dropdown mr-2 mb-2">
+                <button id="job_area_dropdown" class="btn btn-secondary dropdown-toggle" type="button"
+                        data-toggle="dropdown" aria-expanded="false">
+                    Bereiche
+                </button>
+                <div class="dropdown-menu">
+                    <div class="btn-group mx-3" role="group" aria-label="core selection">
+                        <button type="button" class="btn btn-primary">{% trans "Alle" %}</button>
+                        <button type="button" class="btn btn-secondary">{% trans "Kern" %}</button>
+                    </div>
+                    <form class="px-3 py-2" action="#">
+                        <div id="area_filter_template" class="custom-control custom-checkbox mr-sm-2 d-none">
+                            <input type="checkbox" class="custom-control-input" id="area_template">
+                            <label class="custom-control-label text-nowrap" for="area_template"></label>
+                        </div>
+                        <div id="area_inputs"></div>
+                        <button type="submit" class="btn btn-primary">Anwenden</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="dropdown mr-2 mb-2">
+                <button id="job_people_dropdown" class="btn btn-secondary dropdown-toggle" type="button"
+                        data-toggle="dropdown" aria-expanded="false">
+                    1 <i class="fa-solid fa-user"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <div class="btn-group mx-3" role="group" aria-label="core selection">
+                        <button type="button" class="btn btn-primary text-nowrap">{% trans "Nur ich" %}</button>
+                        <button type="button" class="btn btn-light">2</button>
+                        <button type="button" class="btn btn-light">3</button>
+                        <button type="button" class="btn btn-light">4</button>
+                        <button type="button" class="btn btn-light">5</button>
+                        <button type="button" class="btn btn-light">6</button>
+                        <button type="button" class="btn btn-light">7</button>
+                        <button type="button" class="btn btn-light">8</button>
+                        <button type="button" class="btn btn-light">9</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+        <div class="btn-group mr-2 mb-2" role="group" aria-label="Button group with nested dropdown">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                        aria-expanded="false">
+                    <i class="fa-regular fa-calendar"></i>
+                </button>
+                <div class="dropdown-menu calendar-drowpdown">
+                    <div class="row">
+                        <div class="col">{% calendar 2025 5 %}</div>
+                        <div class="col d-none d-sm-block">{% calendar 2025 6 %}</div>
+                        <div class="col d-none d-xl-block">{% calendar 2025 7 %}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-group" role="group">
+                <button type="button"
+                        class="current-month btn btn-secondary dropdown-toggle"
+                        data-toggle="dropdown"
+                        aria-expanded="false">
+                    {% trans "Monat" %}
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#job-month-Mai-2025">Mai</a>
+                    <a class="dropdown-item" href="#job-month-Juni-2025">Juni</a>
+                    <a class="dropdown-item" href="#job-month-Juli-2025">Juli</a>
+                    <a class="dropdown-item" href="#job-month-August-2025">August</a>
+                    <a class="dropdown-item" href="#job-month-September-2025">September</a>
+                    <a class="dropdown-item" href="#job-month-Oktober-2025">Oktober</a>
+                    <a class="dropdown-item" href="#job-month-November-2025">November</a>
+                    <a class="dropdown-item" href="#job-month-Dezember-2025">Dezember</a>
+                    <a class="dropdown-item" href="#job-month-Januar-2026">Januar 2026</a>
+                    <a class="dropdown-item" href="#job-month-Februar-2026">Februar 2026</a>
+                    <a class="dropdown-item" href="#job-month-März-2026">März 2026</a>
+                    <a class="dropdown-item" href="#job-month-April-2026">April 2026</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-group mr-2 mb-2 d-none d-sm-flex weekday-select" role="group" aria-label="Weekday selection">
+            <button type="button" class="btn btn-secondary" data-weekday="Mon">Mo</button>
+            <button type="button" class="btn btn-secondary" data-weekday="Tue">Di</button>
+            <button type="button" class="btn btn-secondary" data-weekday="Wed">Mi</button>
+            <button type="button" class="btn btn-secondary" data-weekday="Thu">Do</button>
+            <button type="button" class="btn btn-secondary" data-weekday="Fri">Fr</button>
+            <button type="button" class="btn btn-secondary" data-weekday="Sat">Sa</button>
+            <button type="button" class="btn btn-secondary" data-weekday="Sun">So</button>
+        </div>
+
+        <div class="dropdown mr-2 mb-2 d-sm-none">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown"
+                    aria-expanded="false">
+                Tag
+            </button>
+            <div class="dropdown-menu dropdown-menu-right">
+                {# TODO: make this work with .weekday_select #}
+                <div class="btn-group mr-2 mb-2 weekday-select-dropdown" role="group" aria-label="Weekday selection">
+                    <button type="button" class="btn btn-light" data-weekday="Mon">Mo</button>
+                    <button type="button" class="btn btn-light" data-weekday="Tue">Di</button>
+                    <button type="button" class="btn btn-light" data-weekday="Wed">Mi</button>
+                    <button type="button" class="btn btn-light" data-weekday="Thu">Do</button>
+                    <button type="button" class="btn btn-light" data-weekday="Fri">Fr</button>
+                    <button type="button" class="btn btn-light" data-weekday="Sat">Sa</button>
+                    <button type="button" class="btn btn-light" data-weekday="Sun">So</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="dropdown mr-2 mb-2">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown"
+                    aria-expanded="false">
+                <i class="fa-regular fa-clock"></i>
+            </button>
+            <div class="dropdown-menu dropdown-menu-right">
+                <h5 class="text-center">nach</h5>
+                <div class="btn-group time-after-select" role="group" aria-label="Basic example">
+                    <button type="button" class="btn btn-light">6</button>
+                    <button type="button" class="btn btn-light">8</button>
+                    <button type="button" class="btn btn-light">10</button>
+                    <button type="button" class="btn btn-light">12</button>
+                    <button type="button" class="btn btn-light">14</button>
+                    <button type="button" class="btn btn-light">16</button>
+                    <button type="button" class="btn btn-light">18</button>
+                    <button type="button" class="btn btn-light">20</button>
+                </div>
+                <h5 class="text-center">vor</h5>
+                <div class="btn-group time-before-select" role="group" aria-label="Basic example">
+                    <button type="button" class="btn btn-light">6</button>
+                    <button type="button" class="btn btn-light">8</button>
+                    <button type="button" class="btn btn-light">10</button>
+                    <button type="button" class="btn btn-light">12</button>
+                    <button type="button" class="btn btn-light">14</button>
+                    <button type="button" class="btn btn-light">16</button>
+                    <button type="button" class="btn btn-light">18</button>
+                    <button type="button" class="btn btn-light">20</button>
+                </div>
+                <p class="text-center mt-2">
+                    <button type="button" class="btn btn-secondary">Zurücksetzen</button>
+                    <button type="button" class="btn btn-primary">Anwenden</button>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
