@@ -6,19 +6,19 @@
 {% include "./toolbar.html" %}
 
 <div id="jobs_calendar">
-    {% regroup jobs by time.date.year as jobs_by_year %}
+    {% regroup jobs by time|date:'Y' as jobs_by_year %}
     {% for year in jobs_by_year %}
         <div class="job-year job-year-{{ year.grouper }}">
             <h2 class="job-year-title d-none">{{ year.grouper }}</h2>  {# TODO: cleanup #}
 
-            {% regroup year.list by time.date|date:'F' as jobs_by_month %}
+            {% regroup year.list by time|date:'F' as jobs_by_month %}
             {% for month in jobs_by_month %}
                 <div id="job-month-{{ month.grouper }}-{{ year.grouper }}" class="job-month job-month-{{ month.grouper }}"
                      data-title="{{ month.grouper }}" data-year="{{ year.grouper }}">
                     <div class="job-month-title d-none"> {# TODO: cleanup #}
                         <p class="h3 job-month-title-text">{{ month.grouper }}</p>
                     </div>
-                    {% regroup month.list by time.date as jobs_by_day %}
+                    {% regroup month.list by time|get_local_date as jobs_by_day %}
                     {% for day in jobs_by_day %}
                         <div class="job-day job-day-{{ day.grouper|date:'D' }}">
                             <div class="job-day-title float-left d-none"> {# TODO: cleanup #}

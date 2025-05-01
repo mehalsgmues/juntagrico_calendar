@@ -4,15 +4,18 @@ import datetime
 from django.db.models import Min, F, Count, FloatField, Subquery, OuterRef
 from django.db.models.functions import TruncDay, Cast
 from django.template.defaultfilters import register
-from django.utils import timezone
 from django.utils.safestring import mark_safe
 from juntagrico.entity.jobs import Job, Assignment
 
 
-@register.filter
+@register.filter(expects_localtime=True)
 def get_local_hour(time):
-    local_time = timezone.localtime(time)
-    return local_time.hour + local_time.minute / 60
+    return time.hour + time.minute / 60
+
+
+@register.filter(expects_localtime=True)
+def get_local_date(time):
+    return time.date()
 
 
 class BootstrapCalendar(calendar.LocaleHTMLCalendar):
