@@ -40,37 +40,49 @@
                                             </div>
                                         {% endif %}
                                     {% endifchanged %}
-                                    <div class="job-details mb-3 card{% if job.type.activityarea.core %} border-primary{% endif %}{% if status == 100 %} job-full{% endif %}"
+                                    <div class="job-details mb-3 card{% if status == 100 %} job-full{% endif %}{% if job.started %} job-started{% endif %}"
                                          data-start-time="{{ job.time|get_local_hour|unlocalize }}"
                                          data-end-time="{{ job.end_time|get_local_hour|unlocalize }}"
                                          data-area="{{ job.type.activityarea.id }}">
                                         <div class="card-body">
+                                            {% if status == 100 %}
+                                                <i class="job-full-icon fa-solid fa-circle-check float-left text-success"></i>
+                                            {% endif %}
                                             <div class="row">
-                                                <div class="col-lg-2">
+                                                <div class="col-10 col-lg-2">
                                                     <p class="job-time mb-1 text-lg-right">
                                                         <strong>{{ job.time|date:'H:i' }}</strong>
                                                         <small class="job-time-sep d-lg-none">-</small>
                                                         <small>{{ job.end_time|date:'H:i' }}</small>
                                                     </p>
                                                 </div>
-                                                <div class="col-lg-10 position-static">
+                                                <div class="col-2 d-lg-none job-core">
+                                                    {% if job.type.activityarea.core %}
+                                                        {% include "./core.html" %}
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-lg-9 position-static">
+                                                    {% if job.multiplier != 1 %}
+                                                        {% include "./multiplier.html" %}
+                                                    {% endif %}
                                                     <p class="job-title h4 mb-1 mb-lg-0 card-title">
-                                                        <a href="{% url 'job' job.id %}" class="stretched-link">
+                                                        <a href="{% url 'job' job.id %}" class="stretched-link"
+                                                           {% if job.type.activityarea.core %}title="{% trans "Kernbereich" %}"{% endif %}>
                                                             {{ job.type.get_name }}
                                                         </a>
                                                     </p>
                                                     <p class="job-area mb-0">
-                                                        {% if job.type.activityarea.core %}
-                                                            <img alt="{% trans "Kernbereich" %}"
-                                                                 src="{% images "core" %}"
-                                                                 class="job-is-core"/>
-                                                        {% endif %}
                                                         <span class="text-muted">{{ job.type.activityarea }}</span>
                                                     </p>
                                                     <p class="job-location mb-0">
                                                         <i class="fa-solid fa-location-dot"></i>
                                                         {{ job.type.location }}
                                                     </p>
+                                                </div>
+                                                <div class="col-lg-1 d-none d-lg-block job-core">
+                                                    {% if job.type.activityarea.core %}
+                                                        {% include "./core.html" %}
+                                                    {% endif %}
                                                 </div>
                                             </div>
 
@@ -89,7 +101,10 @@
                                                  aria-valuenow="{{ job.occupied_slots }}"
                                                  aria-valuemin="0"
                                                  aria-valuemax="{{ job.slots }}">
-                                                {{ job.occupied_slots }} / {{ job.slots }}
+                                                <span>
+                                                    <strong>{{ job.occupied_slots }} / {{ job.slots }}</strong>
+                                                    {% blocktrans count s=job.slots %}Person{% plural %}Personen{% endblocktrans %}
+                                                </span>
                                             </div>
                                         </div>
                                     </div>

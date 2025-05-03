@@ -5,6 +5,9 @@ from django.db.models import Min, F, Count, FloatField, Subquery, OuterRef
 from django.db.models.functions import TruncDay, Cast
 from django.template.defaultfilters import register
 from django.utils.safestring import mark_safe
+from django.utils.formats import date_format
+from django.utils.translation import gettext as _
+
 from juntagrico.entity.jobs import Job, Assignment
 
 
@@ -18,17 +21,23 @@ def get_local_date(time):
     return time.date()
 
 
-class BootstrapCalendar(calendar.LocaleHTMLCalendar):
+class BootstrapCalendar(calendar.HTMLCalendar):
     cssclass_month = 'table calendar-month'
 
-    def __init__(self, day_dots):
-        super().__init__()
+    def __init__(self, day_dots, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.day_dots = day_dots
 
     def formatmonth(self, theyear, themonth, withyear=True):
         self.cssclass_month += f' calendar-month-{theyear}-{themonth}'
-        self.date = datetime.date(theyear, themonth, 1)
         return super().formatmonth(theyear, themonth, withyear)
+
+    def formatmonthname(self, theyear, themonth, withyear = True):
+        month = date_format(datetime.date(theyear, themonth, 1), 'F Y' if withyear else 'F')
+        return f'<tr><th colspan="7" class="{self.cssclass_month}">{month}</th></tr>'
+
+    def formatweekday(self, day):
+        return f'<th class="{self.cssclasses_weekday_head[day]}">{_(calendar.day_abbr[day])}</th>'
 
     def formatday(self, day, weekday):
         if day != 0:

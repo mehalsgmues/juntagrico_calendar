@@ -1,0 +1,29 @@
+{% load i18n %}
+{% load juntagrico.config %}
+<p class="job-multiplier mb-0">
+    {% if job.multiplier == 0 %}
+        {% block 0 %}
+            <i>
+                {% blocktrans trimmed with v_assignment=vocabulary.assignment %}
+                    Zählt nicht als {{ v_assignment }}
+                {% endblocktrans %}
+            </i>
+        {% endblock %}
+    {% else %}
+        {% block multiplier %}
+            <span>
+                {% if job.multiplier == 0.75 %}
+                    &frac34;
+                {% elif job.multiplier == 0.5 %}
+                    &frac12;
+                {% elif job.multiplier == 0.25 %}
+                    &frac14;
+                {% else %}
+                    {{ job.multiplier|floatformat:-1 }}
+                    &times;
+                {% endif %}
+                <img alt="{% trans "Einsatz" %}" title="{% trans "Einsatz" %}" src="{% images "single_full" %}"/>
+            </span>
+        {% endblock %}
+    {% endif %}
+</p>

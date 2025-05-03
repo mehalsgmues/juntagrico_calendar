@@ -31,12 +31,14 @@
 
 .card-progress {
     border-radius: 0 0 .25rem .25rem;
+    height: 1.5rem;
+    font-size: 1.2rem;
 }
 
 .card-progress .progress-bar {
     text-align: left;
     padding: 0 1rem;
-    min-width: 4rem;
+    min-width: 10rem;
 }
 
 .job-time {
@@ -45,7 +47,12 @@
 }
 
 .job-is-core {
+    float: right;
     vertical-align: initial;
+}
+
+.job-full .job-is-core {
+    display: none;
 }
 
 .job-details.border-primary::before {
@@ -79,7 +86,7 @@
 }
 
 .job-full .job-time-sep {
-    display: initial;
+    display: initial !important;
 }
 
 .job-full .card-progress {
@@ -118,4 +125,12 @@
 
 .calendar-drowpdown {
     width: max-content;
+}
+
+.job-core {
+    height: 0;
+}
+
+.job-started {
+    opacity: 0.5;
 }
