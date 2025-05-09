@@ -32,20 +32,29 @@
                             <input type="checkbox" class="custom-control-input" id="area_template">
                             <label class="custom-control-label text-nowrap" for="area_template"></label>
                         </div>
-                        <div id="area_inputs"></div>
+                        <div id="area_inputs">
+                            {% for area in areas %}
+                                <div class="custom-control custom-checkbox mr-sm-2">
+                                    <input type="checkbox" class="custom-control-input" id="area_filter_{{ area.id }}">
+                                    <label class="custom-control-label text-nowrap" for="area_filter_{{ area.id }}">
+                                        {{ area.name }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
                         <button type="submit" class="btn btn-primary">Anwenden</button>
                     </form>
                 </div>
             </div>
 
             <div class="dropdown mr-2 mb-2">
-                <button id="job_people_dropdown" class="btn btn-secondary dropdown-toggle" type="button"
+                <button id="job_slots_dropdown" class="btn btn-secondary dropdown-toggle" type="button"
                         data-toggle="dropdown" aria-expanded="false">
-                    1 <i class="fa-solid fa-user"></i>
+                    <span></span> <i class="fa-solid fa-user"></i>
                 </button>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <div class="btn-group mx-3" role="group" aria-label="core selection">
-                        <button type="button" class="btn btn-primary text-nowrap">{% trans "Nur ich" %}</button>
+                    <div id="free-slot-select" class="btn-group mx-3" role="group" aria-label="{% trans "Filtere nach freien Plätzen" %}">
+                        <button type="button" class="btn btn-light text-nowrap" data-value="1">{% trans "Nur für mich" %}</button>
                         <button type="button" class="btn btn-light">2</button>
                         <button type="button" class="btn btn-light">3</button>
                         <button type="button" class="btn btn-light">4</button>
@@ -55,6 +64,9 @@
                         <button type="button" class="btn btn-light">8</button>
                         <button type="button" class="btn btn-light">9</button>
                     </div>
+                    <p class="text-center mt-2">
+                        <button type="button" class="btn btn-secondary"><i class="fa-solid fa-rotate-left"></i> Zurücksetzen</button>
+                    </p>
                 </div>
             </div>
         </div>
@@ -84,18 +96,9 @@
                     {% trans "Monat" %}
                 </button>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#job-month-Mai-2025">Mai</a>
-                    <a class="dropdown-item" href="#job-month-Juni-2025">Juni</a>
-                    <a class="dropdown-item" href="#job-month-Juli-2025">Juli</a>
-                    <a class="dropdown-item" href="#job-month-August-2025">August</a>
-                    <a class="dropdown-item" href="#job-month-September-2025">September</a>
-                    <a class="dropdown-item" href="#job-month-Oktober-2025">Oktober</a>
-                    <a class="dropdown-item" href="#job-month-November-2025">November</a>
-                    <a class="dropdown-item" href="#job-month-Dezember-2025">Dezember</a>
-                    <a class="dropdown-item" href="#job-month-Januar-2026">Januar 2026</a>
-                    <a class="dropdown-item" href="#job-month-Februar-2026">Februar 2026</a>
-                    <a class="dropdown-item" href="#job-month-März-2026">März 2026</a>
-                    <a class="dropdown-item" href="#job-month-April-2026">April 2026</a>
+                    {% for month, format in months %}
+                        <a class="dropdown-item" href="#job-month-{{ month|date:"F" }}-{{ month|date:"Y" }}">{{ month|date:format }}</a>
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -130,9 +133,9 @@
         </div>
 
         <div class="dropdown mr-2 mb-2">
-            <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown"
-                    aria-expanded="false">
-                <i class="fa-regular fa-clock"></i>
+            <button id="job_time_dropdown" class="btn btn-secondary dropdown-toggle" type="button"
+                    data-toggle="dropdown" aria-expanded="false">
+                <i class="fa-regular fa-clock"></i> <span></span>
             </button>
             <div class="dropdown-menu dropdown-menu-right">
                 <h5 class="text-center">nach</h5>

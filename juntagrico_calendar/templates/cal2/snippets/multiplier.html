@@ -22,7 +22,9 @@
                     {{ job.multiplier|floatformat:-1 }}
                     &times;
                 {% endif %}
-                <img alt="{% trans "Einsatz" %}" title="{% trans "Einsatz" %}" src="{% images "single_full" %}"/>
+                {% block multiplier_icon %}
+                    <img alt="{% trans "Einsatz" %}" title="{% trans "Einsatz" %}" src="{% images "single_full" %}"/>
+                {% endblock %}
             </span>
         {% endblock %}
     {% endif %}

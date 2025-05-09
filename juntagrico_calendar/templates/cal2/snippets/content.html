@@ -43,6 +43,7 @@
                                     <div class="job-details mb-3 card{% if status == 100 %} job-full{% endif %}{% if job.started %} job-started{% endif %}"
                                          data-start-time="{{ job.time|get_local_hour|unlocalize }}"
                                          data-end-time="{{ job.end_time|get_local_hour|unlocalize }}"
+                                         data-free-slots="{{ job.free_slots }}"
                                          data-area="{{ job.type.activityarea.id }}">
                                         <div class="card-body">
                                             {% if status == 100 %}
@@ -62,15 +63,15 @@
                                                     {% endif %}
                                                 </div>
                                                 <div class="col-lg-9 position-static">
-                                                    {% if job.multiplier != 1 %}
-                                                        {% include "./multiplier.html" %}
-                                                    {% endif %}
                                                     <p class="job-title h4 mb-1 mb-lg-0 card-title">
                                                         <a href="{% url 'job' job.id %}" class="stretched-link"
-                                                           {% if job.type.activityarea.core %}title="{% trans "Kernbereich" %}"{% endif %}>
+                                                            {% if job.type.activityarea.core %}title="{% trans "Kernbereich" %}"{% endif %}>
                                                             {{ job.type.get_name }}
                                                         </a>
                                                     </p>
+                                                    {% if job.multiplier != 1 %}
+                                                        {% include "./multiplier.html" %}
+                                                    {% endif %}
                                                     <p class="job-area mb-0">
                                                         <span class="text-muted">{{ job.type.activityarea }}</span>
                                                     </p>

@@ -20,7 +20,7 @@ $(function () {
         apply_day_filters()
     })
 
-    $('.time-after-select, .time-before-select').children().on('click', function (e) {
+    $('.time-after-select, .time-before-select, #free-slot-select').children().on('click', function (e) {
         let btn = $(this)
         btn.siblings().removeClass('btn-primary').addClass('btn-light')
         btn.toggleClass(['btn-light', 'btn-primary'])
@@ -39,24 +39,67 @@ function apply_filters() {
     job_cards.hide()
     let search = $('#job_search_field').val()
     job_cards = job_cards.has('p:contains("' + search + '")')  // TODO: make this case insensitive
-    let earliest_start_time = parseFloat($('.time-after-select .btn-primary').text())
-    let latest_end_time = parseFloat($('.time-before-select .btn-primary').text())
-    if (earliest_start_time || latest_end_time) {
-        job_cards.each(function () {
-            let job_card = $(this)
-            let start_time = parseFloat(job_card.data('startTime'))
-            let end_time = parseFloat(job_card.data('endTime'))
-            let late_enough = !start_time || start_time >= earliest_start_time
-            let early_enough = !end_time || end_time <= latest_end_time
-            if (earliest_start_time < latest_end_time) {
-                job_card.toggle(late_enough && early_enough)
-            } else {
-                job_card.toggle(late_enough || early_enough)
-            }
-        })
-    } else {
-        job_cards.show()
+
+    // slot and date filter
+    let selected_free_slots = $('#free-slot-select .btn-primary')
+    let required_free_slots = parseInt(selected_free_slots.data('value') || selected_free_slots.text()) || 0
+
+    let earliest_start_time = parseFloat($('.time-after-select .btn-primary').text()) || false
+    let latest_end_time = parseFloat($('.time-before-select .btn-primary').text()) || false
+
+    // update display
+    $('#job_slots_dropdown')
+        .toggleClass('btn-secondary', !required_free_slots)
+        .toggleClass('btn-primary', required_free_slots > 0)
+        .children('span').text(required_free_slots || '')
+
+    let activate = earliest_start_time !== false || latest_end_time !== false
+    let time_text = ''
+    if (earliest_start_time && latest_end_time) {
+        // TODO: translate these
+        time_text = earliest_start_time + ' - ' + latest_end_time + ' Uhr'
+    } else if (earliest_start_time) {
+        time_text = 'nach ' + earliest_start_time + ' Uhr'
+    } else if (latest_end_time) {
+        time_text = 'vor ' + latest_end_time + ' Uhr'
     }
+    $('#job_time_dropdown').dropdown('update')
+        .toggleClass('btn-secondary', !activate)
+        .toggleClass('btn-primary', activate)
+        .children('span').text(time_text)
+
+    // show selected cards
+    if (earliest_start_time || latest_end_time || required_free_slots) {
+        job_cards = job_cards.filter(function (index) {
+            let job_card = $(this)
+            // filter by slots
+            let available_slots = parseInt(job_card.data('freeSlots'))
+            if (available_slots < required_free_slots) {
+                return false
+            }
+            // filter by time
+            if (earliest_start_time || latest_end_time) {
+                let start_time = parseFloat(job_card.data('startTime'))
+                let end_time = parseFloat(job_card.data('endTime'))
+                if (earliest_start_time > latest_end_time) {
+                    // if job can't be between the selected times, treat conditions as OR
+                    if (start_time && start_time < earliest_start_time && end_time && end_time > latest_end_time) {
+                        return false
+                    }
+                } else {
+                    // otherwise both conditions must be met
+                    if (start_time && start_time < earliest_start_time) {
+                        return false
+                    }
+                    if (end_time && end_time > latest_end_time) {
+                        return false
+                    }
+                }
+            }
+            return true
+        })
+    }
+    job_cards.show()
     apply_day_filters()
 }
 

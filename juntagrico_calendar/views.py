@@ -1,13 +1,17 @@
 import datetime
 import re
 from datetime import timedelta
+
+from dateutil.rrule import rrule, MONTHLY
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q, Max
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.timezone import template_localtime
 
-from juntagrico.entity.jobs import JobType, RecuringJob, OneTimeJob, Job
+from juntagrico.entity.jobs import JobType, RecuringJob, OneTimeJob, Job, ActivityArea
 from juntagrico.view_decorators import highlighted_menu
 
 from juntagrico_calendar.util.temporal import get_datetime_from_iso8601_string
@@ -90,6 +94,17 @@ def job_calendar2(request):
     # TODO: only show full jobs by default to people that coordinate areas or can create/edit jobs
     today = datetime.date.today()
     jobs = Job.objects.filter(time__date__gte=today).order_by('time')
+    areas = ActivityArea.objects.filter(Q(jobtype__recuringjob__time__date__gte=today) | Q(onetimejob__time__date__gte=today)).distinct()
+
+    # get months with jobs
+    # TODO: make sure this works if no (future) jobs are defined
+    last_date = template_localtime(jobs.aggregate(Max('time'))['time__max'])
+    months = [
+        (dt.date(), 'F Y' if dt.year != today.year else 'F')
+        for dt in rrule(MONTHLY, dtstart=today.replace(day=1), until=datetime.date(last_date.year, last_date.month, 1))
+    ]
     return render(request, 'cal2/job_calendar.html', {
         'jobs': jobs[:100],
+        'areas': areas,
+        'months': months,
     })
