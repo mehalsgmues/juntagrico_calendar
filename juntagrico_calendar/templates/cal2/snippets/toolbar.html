@@ -19,13 +19,13 @@
             <div class="dropdown mr-2 mb-2">
                 <button id="job_area_dropdown" class="btn btn-secondary dropdown-toggle" type="button"
                         data-toggle="dropdown" aria-expanded="false">
-                    Bereiche
+                    {% trans "Alle Bereiche" %}
                 </button>
                 <div class="dropdown-menu">
-                    <div class="btn-group mx-3" role="group" aria-label="core selection">
-                        <button type="button" class="btn btn-primary">{% trans "Alle" %}</button>
-                        <button type="button" class="btn btn-secondary">{% trans "Kern" %}</button>
-                        <button type="button" class="btn btn-secondary">{% trans "Meine" %}</button>
+                    <div class="btn-group mx-3" id="area_btn" role="group" aria-label="core selection">
+                        <button type="button" class="btn btn-primary" id="all_area_btn">{% trans "Alle" %}</button>
+                        <button type="button" class="btn btn-light" id="core_area_btn">{% trans "Kern" %}</button>
+                        <button type="button" class="btn btn-light" id="own_area_btn">{% trans "Meine" %}</button>
                     </div>
                     <form class="px-3 py-2" action="#">
                         <div id="area_filter_template" class="custom-control custom-checkbox mr-sm-2 d-none">
@@ -33,14 +33,16 @@
                             <label class="custom-control-label text-nowrap" for="area_template"></label>
                         </div>
                         <div id="area_inputs">
-                            {% for area in areas %}
-                                <div class="custom-control custom-checkbox mr-sm-2">
-                                    <input type="checkbox" class="custom-control-input" id="area_filter_{{ area.id }}">
-                                    <label class="custom-control-label text-nowrap" for="area_filter_{{ area.id }}">
-                                        {{ area.name }}
-                                    </label>
-                                </div>
-                            {% endfor %}
+                            {% with own_areas=request.user.member.areas.all %}
+                                {% for area in areas %}
+                                    <div class="custom-control custom-checkbox mr-sm-2{% if area in own_areas %} own-area{% endif %}{% if area.core %} core-area{% endif %}">
+                                        <input type="checkbox" class="custom-control-input" id="area_filter_{{ area.id }}" value="{{ area.id }}">
+                                        <label class="custom-control-label text-nowrap" for="area_filter_{{ area.id }}">
+                                            {{ area.name }}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            {% endwith %}
                         </div>
                         <button type="submit" class="btn btn-primary">Anwenden</button>
                     </form>
@@ -107,31 +109,33 @@
             </div>
         </div>
 
-        <div class="btn-group mr-2 mb-2 d-none d-sm-flex weekday-select" role="group" aria-label="Weekday selection">
-            <button type="button" class="btn btn-secondary" data-weekday="Mon">Mo</button>
-            <button type="button" class="btn btn-secondary" data-weekday="Tue">Di</button>
-            <button type="button" class="btn btn-secondary" data-weekday="Wed">Mi</button>
-            <button type="button" class="btn btn-secondary" data-weekday="Thu">Do</button>
-            <button type="button" class="btn btn-secondary" data-weekday="Fri">Fr</button>
-            <button type="button" class="btn btn-secondary" data-weekday="Sat">Sa</button>
-            <button type="button" class="btn btn-secondary" data-weekday="Sun">So</button>
+        <div class="btn-group mr-2 mb-2 d-none d-sm-flex" id="weekday_select"
+             role="group" aria-label="Weekday selection">
+            <button type="button" class="btn btn-secondary" data-weekday="1">{% trans "Mon" %}</button>
+            <button type="button" class="btn btn-secondary" data-weekday="2">{% trans "Tue" %}</button>
+            <button type="button" class="btn btn-secondary" data-weekday="3">{% trans "Wed" %}</button>
+            <button type="button" class="btn btn-secondary" data-weekday="4">{% trans "Thu" %}</button>
+            <button type="button" class="btn btn-secondary" data-weekday="5">{% trans "Fri" %}</button>
+            <button type="button" class="btn btn-secondary" data-weekday="6">{% trans "Sat" %}</button>
+            <button type="button" class="btn btn-secondary" data-weekday="0">{% trans "Sun" %}</button>
         </div>
 
         <div class="dropdown mr-2 mb-2 d-sm-none">
-            <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown"
-                    aria-expanded="false">
-                Tag
+            <button class="btn btn-secondary dropdown-toggle" id="weekday_dropdown" type="button"
+                    data-toggle="dropdown" aria-expanded="false">
+                {% trans "Tag" %}
             </button>
             <div class="dropdown-menu dropdown-menu-right">
                 {# TODO: make this work with .weekday_select #}
-                <div class="btn-group mr-2 mb-2 weekday-select-dropdown" role="group" aria-label="Weekday selection">
-                    <button type="button" class="btn btn-light" data-weekday="Mon">Mo</button>
-                    <button type="button" class="btn btn-light" data-weekday="Tue">Di</button>
-                    <button type="button" class="btn btn-light" data-weekday="Wed">Mi</button>
-                    <button type="button" class="btn btn-light" data-weekday="Thu">Do</button>
-                    <button type="button" class="btn btn-light" data-weekday="Fri">Fr</button>
-                    <button type="button" class="btn btn-light" data-weekday="Sat">Sa</button>
-                    <button type="button" class="btn btn-light" data-weekday="Sun">So</button>
+                <div class="btn-group mr-2 mb-2" id="weekday_select_dropdown"
+                     role="group" aria-label="Weekday selection">
+                    <button type="button" class="btn btn-light" data-weekday="1">{% trans "Mon" %}</button>
+                    <button type="button" class="btn btn-light" data-weekday="2">{% trans "Tue" %}</button>
+                    <button type="button" class="btn btn-light" data-weekday="3">{% trans "Wed" %}</button>
+                    <button type="button" class="btn btn-light" data-weekday="4">{% trans "Thu" %}</button>
+                    <button type="button" class="btn btn-light" data-weekday="5">{% trans "Fri" %}</button>
+                    <button type="button" class="btn btn-light" data-weekday="6">{% trans "Sat" %}</button>
+                    <button type="button" class="btn btn-light" data-weekday="0">{% trans "Sun" %}</button>
                 </div>
             </div>
         </div>
