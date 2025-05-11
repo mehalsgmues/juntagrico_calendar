@@ -1,18 +1,10 @@
 $(function () {
-    $(window).on('scroll', function () {
-        let scrollTop = $(this).scrollTop()
-        let job_months = $('.job-month')
-        let current = {position: job_months.first().offset().top - scrollTop, element: job_months.first()}
-        job_months.slice(1).each(function () {
-            let $this = $(this)
-            let position = $this.offset().top - scrollTop
+    // load more jobs
+    init_load_more_jobs()
+    init_month_selection()
 
-            if (position < 100 && position > current.position) {
-                current = {position: position, element: $this}
-            }
-        })
-        $('.current-month').text(current.element.data('title'))
-    })
+    $(window).on('scroll', update_month_button)
+    update_month_button()
 
     $('.weekday-select').children().on('click', function () {
         let btn = $(this)
@@ -34,9 +26,58 @@ $(function () {
     $('#job_area_dropdown').on('click', collect_areas)
 })
 
+function init_load_more_jobs() {
+    $('#load_later_jobs a').on('click.load_more', function(e) {
+        let btn = $(this)
+        btn.hide().siblings().removeClass('d-none')  // show loader
+        $.get(btn.data('url'), function(data) {
+            btn.parent().replaceWith($(data).children())
+            init_load_more_jobs()
+            apply_filters()
+        })
+        e.preventDefault()
+        return false
+    })
+}
+
+function init_month_selection() {
+    // check for each month if it is already loaded. If not make it link to a new page with that month
+    $('.month-selection').children().on('click.month', function(e) {
+        let month_link = $(this)
+        let href = month_link.attr('href')
+        if (href[0] === '#' && !$(href).length) {
+            // load missing content
+            // TODO: Show loader
+            $('#jobs_calendar').load(month_link.data('url') + ' #jobs_calendar > *', function() {
+                init_load_more_jobs()
+                apply_filters()
+                update_month_button()
+            })
+            e.preventDefault()
+            return false
+        }
+        // otherwise do default action
+    })
+}
+
+function update_month_button() {
+    let scrollTop = $(this).scrollTop()
+    let job_months = $('.job-month')
+    let current = {position: job_months.first().offset().top - scrollTop, element: job_months.first()}
+    job_months.slice(1).each(function () {
+        let $this = $(this)
+        let position = $this.offset().top - scrollTop
+
+        if (position < 100 && position > current.position) {
+            current = {position: position, element: $this}
+        }
+    })
+    $('.current-month').text(current.element.data('title'))
+}
+
 function apply_filters() {
     let job_cards = $('.job-details')
-    job_cards.hide()
+    let all_job_cards = job_cards
     let search = $('#job_search_field').val()
     job_cards = job_cards.has('p:contains("' + search + '")')  // TODO: make this case insensitive
 
@@ -100,6 +141,7 @@ function apply_filters() {
         })
     }
     job_cards.show()
+    all_job_cards.not(job_cards).hide()
     apply_day_filters()
 }
 

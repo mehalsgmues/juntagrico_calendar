@@ -95,9 +95,13 @@
                         aria-expanded="false">
                     {% trans "Monat" %}
                 </button>
-                <div class="dropdown-menu">
+                <div class="dropdown-menu month-selection">
                     {% for month, format in months %}
-                        <a class="dropdown-item" href="#job-month-{{ month|date:"F" }}-{{ month|date:"Y" }}">{{ month|date:format }}</a>
+                        <a class="dropdown-item"
+                            href="#job-month-{{ month|date:"F-Y" }}"
+                            data-url="{% url 'partial-jobs-by-month' month.year month.month %}">
+                            {{ month|date:format }}
+                        </a>
                     {% endfor %}
                 </div>
             </div>

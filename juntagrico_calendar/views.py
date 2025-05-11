@@ -2,6 +2,7 @@ import datetime
 import re
 from datetime import timedelta
 
+from dateutil.relativedelta import relativedelta
 from dateutil.rrule import rrule, MONTHLY
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Max
@@ -87,24 +88,61 @@ def jobs_as_json(request):
 
 @login_required
 @highlighted_menu('jobs')
-def job_calendar2(request):
+def job_calendar2(request, year=None, month=None):
     """
     Job calendar/agenda view
     """
     # TODO: only show full jobs by default to people that coordinate areas or can create/edit jobs
     today = datetime.date.today()
-    jobs = Job.objects.filter(time__date__gte=today).order_by('time')
+    show_older = False
+    if year and month:
+        start_date = datetime.date(year=year, month=month, day=1)
+        show_older = start_date.replace(day=1) - relativedelta(months=2)
+    else:
+        start_date = today
+    until = start_date.replace(day=1) + relativedelta(months=2)
+    jobs = Job.objects.filter(time__date__gte=start_date, time__date__lt=until).order_by('time')
+
+    show_next = False
+    if Job.objects.filter(time__date__gte=until).exists():
+        show_next=until
+
     areas = ActivityArea.objects.filter(Q(jobtype__recuringjob__time__date__gte=today) | Q(onetimejob__time__date__gte=today)).distinct()
 
     # get months with jobs
-    # TODO: make sure this works if no (future) jobs are defined
-    last_date = template_localtime(jobs.aggregate(Max('time'))['time__max'])
-    months = [
-        (dt.date(), 'F Y' if dt.year != today.year else 'F')
-        for dt in rrule(MONTHLY, dtstart=today.replace(day=1), until=datetime.date(last_date.year, last_date.month, 1))
-    ]
+    last_date = template_localtime(Job.objects.aggregate(Max('time'))['time__max'])
+    if last_date:
+        months = [
+            (dt.date(), 'F Y' if dt.year != today.year else 'F')
+            for dt in rrule(MONTHLY, dtstart=today.replace(day=1), until=datetime.date(last_date.year, last_date.month, 1))
+        ]
+    else:
+        months = []
+
     return render(request, 'cal2/job_calendar.html', {
-        'jobs': jobs[:100],
+        'jobs': jobs,
+        'show_next': show_next,
+        'show_older': show_older,
         'areas': areas,
         'months': months,
+    })
+
+
+@login_required
+def partial_jobs_by_month(request, year, month):
+    # TODO: Deduplicate with above
+    today = datetime.date.today()
+    start_date = max(datetime.date(year=year, month=month, day=1), today)
+    until = start_date.replace(day=1) + relativedelta(months=2)
+    jobs = Job.objects.filter(time__date__gte=start_date, time__date__lt=until).order_by('time')
+
+    # TODO: Show back link if applicable
+
+    show_next = False
+    if Job.objects.filter(time__date__gte=until).exists():
+        show_next=until
+
+    return render(request, 'cal2/snippets/content.html', {
+        'jobs': jobs,
+        'show_next': show_next,
     })

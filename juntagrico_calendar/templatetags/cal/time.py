@@ -40,6 +40,7 @@ class BootstrapCalendar(calendar.HTMLCalendar):
         return f'<th class="{self.cssclasses_weekday_head[day]}">{_(calendar.day_abbr[day])}</th>'
 
     def formatday(self, day, weekday):
+        # TODO: highlight today
         if day != 0:
             return (f'<td class="calendar-day-{day} text-center">{day}'
                     f'<div class="calendar-dot {self.day_dots.get(day, "")}"></div></td>')

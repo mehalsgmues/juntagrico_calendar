@@ -3,9 +3,20 @@
 {% load juntagrico.config %}
 {% load i18n %}
 
-{% include "./toolbar.html" %}
-
 <div id="jobs_calendar">
+    {% if show_older %}
+        <div id="load_earlier_jobs" class="text-center">
+            <a href="{% url 'jobs-by-month' show_older.year show_older.month %}"
+               data-url="{% url 'partial-jobs-by-month' show_older.year show_older.month %}"
+               class="btn btn-outline-primary btn-lg">
+                {% trans "Ältere Einsätze" %}
+            </a>
+            <div class="spinner-border d-none" role="status">
+              <span class="sr-only">{% trans "Lädt..." %}</span>
+            </div>
+        </div>
+    {% endif %}
+
     {% regroup jobs by time|date:'Y' as jobs_by_year %}
     {% for year in jobs_by_year %}
         <div class="job-year job-year-{{ year.grouper }}">
@@ -13,7 +24,8 @@
 
             {% regroup year.list by time|date:'F' as jobs_by_month %}
             {% for month in jobs_by_month %}
-                <div id="job-month-{{ month.grouper }}-{{ year.grouper }}" class="job-month job-month-{{ month.grouper }}"
+                <div id="job-month-{{ month.grouper }}-{{ year.grouper }}"
+                     class="job-month job-month-{{ month.grouper }}{% if not forloop.last %} complete{% endif %}"
                      data-title="{{ month.grouper }}" data-year="{{ year.grouper }}">
                     <div class="job-month-title d-none"> {# TODO: cleanup #}
                         <p class="h3 job-month-title-text">{{ month.grouper }}</p>
@@ -28,7 +40,7 @@
                             </div>
                             <div class="text-center mb-4 job-day-header">
                                 <h4>
-                                    {{ day.grouper|date:'D j. F Y'|upper }}
+                                    {{ day.grouper|date:'l j. F Y'|upper }}
                                 </h4>
                             </div>
                             {% for job in day.list %}
@@ -51,10 +63,15 @@
                                             {% endif %}
                                             <div class="row">
                                                 <div class="col-10 col-lg-2">
-                                                    <p class="job-time mb-1 text-lg-right">
-                                                        <strong>{{ job.time|date:'H:i' }}</strong>
-                                                        <small class="job-time-sep d-lg-none">-</small>
-                                                        <small>{{ job.end_time|date:'H:i' }}</small>
+                                                    <p class="mb-1 text-lg-right">
+                                                        <span class="job-time">
+                                                            <strong>{{ job.time|date:'TIME_FORMAT' }}</strong>
+                                                            <small class="job-time-sep d-lg-none">-</small>
+                                                            <small>{{ job.end_time|date:'TIME_FORMAT' }}</small>
+                                                        </span>
+                                                        <span class="job-date ml-3 ml-lg-0 text-muted">
+                                                            {{ job.time|date:'SHORT_DATE_FORMAT' }}
+                                                        </span>
                                                     </p>
                                                 </div>
                                                 <div class="col-2 d-lg-none job-core">
@@ -132,4 +149,17 @@
     {% empty %}
         {% trans "Es gibt keine bevorstehenden Einsätze" %}
     {% endfor %}
+
+    {% if show_next %}
+        <div id="load_later_jobs" class="text-center">
+            <a href="{% url 'jobs-by-month' show_next.year show_next.month %}"
+               data-url="{% url 'partial-jobs-by-month' show_next.year show_next.month %}"
+               class="btn btn-primary btn-lg">
+                {% trans "Mehr anzeigen" %}
+            </a>
+            <div class="spinner-border d-none" role="status">
+              <span class="sr-only">{% trans "Lädt..." %}</span>
+            </div>
+        </div>
+    {% endif %}
 </div>
