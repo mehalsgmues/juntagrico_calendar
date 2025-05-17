@@ -1,34 +1,3 @@
-.job-year-title, .job-month-title, .job-day-title {
-    position: sticky;
-    background-color: #fefffa;
-}
-
-.job-year-title {
-    top: 3.5rem;
-    margin-left: 2rem;
-    font-size: 1rem;
-    max-width: calc(16.666667% - 2rem);
-}
-
-.job-month-title {
-    top: 1.1rem;
-    margin-left: 2rem;
-    margin-bottom: -6.4rem;
-    max-width: calc(16.666667% - 2rem);
-}
-
-.job-day-title {
-    top: 0;
-}
-
-.job-month {
-    margin-bottom: 3rem;
-}
-
-.job-day {
-    margin-top: 5rem;
-}
-
 .card-progress {
     border-radius: 0 0 .25rem .25rem;
     height: 1.5rem;
@@ -71,18 +40,17 @@
     margin-bottom: 0;
 }
 
-.job-full .job-area, .job-full .job-location {
+.job-full .job-area, .job-full .job-location, .job-full .job-date {
     display: none;
 }
 
 .job-full p {
     font-size: 1rem;
+    line-height: 1.2;
 }
 
 .job-full .job-time {
     font-size: .75em;
-    margin: 0;
-    line-height: initial;
 }
 
 .job-full .job-time-sep {
@@ -133,4 +101,12 @@
 
 .job-started {
     opacity: 0.5;
+}
+
+#load_previous_jobs:not(:first-child) {
+    display: none;
+}
+
+#load_next_jobs:not(:last-child) {
+    display: none;
 }

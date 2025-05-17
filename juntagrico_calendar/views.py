@@ -94,10 +94,10 @@ def job_calendar2(request, year=None, month=None):
     """
     # TODO: only show full jobs by default to people that coordinate areas or can create/edit jobs
     today = datetime.date.today()
-    show_older = False
+    show_previous = False
     if year and month:
         start_date = datetime.date(year=year, month=month, day=1)
-        show_older = start_date.replace(day=1) - relativedelta(months=2)
+        show_previous = start_date.replace(day=1) + relativedelta(months=-1)
     else:
         start_date = today
     until = start_date.replace(day=1) + relativedelta(months=2)
@@ -107,7 +107,9 @@ def job_calendar2(request, year=None, month=None):
     if Job.objects.filter(time__date__gte=until).exists():
         show_next=until
 
-    areas = ActivityArea.objects.filter(Q(jobtype__recuringjob__time__date__gte=today) | Q(onetimejob__time__date__gte=today)).distinct()
+    areas = ActivityArea.objects.filter(
+        Q(jobtype__recuringjob__time__date__gte=today) | Q(onetimejob__time__date__gte=today)
+    ).distinct().order_by('name')
 
     # get months with jobs
     last_date = template_localtime(Job.objects.aggregate(Max('time'))['time__max'])
@@ -122,7 +124,7 @@ def job_calendar2(request, year=None, month=None):
     return render(request, 'cal2/job_calendar.html', {
         'jobs': jobs,
         'show_next': show_next,
-        'show_older': show_older,
+        'show_previous': show_previous,
         'areas': areas,
         'months': months,
     })
@@ -133,16 +135,19 @@ def partial_jobs_by_month(request, year, month):
     # TODO: Deduplicate with above
     today = datetime.date.today()
     start_date = max(datetime.date(year=year, month=month, day=1), today)
-    until = start_date.replace(day=1) + relativedelta(months=2)
+    until = start_date.replace(day=1) + relativedelta(months=1)
     jobs = Job.objects.filter(time__date__gte=start_date, time__date__lt=until).order_by('time')
 
-    # TODO: Show back link if applicable
+    show_previous = False
+    if start_date != today:
+        show_previous = start_date + relativedelta(months=-1)
 
     show_next = False
     if Job.objects.filter(time__date__gte=until).exists():
-        show_next=until
+        show_next = until
 
     return render(request, 'cal2/snippets/content.html', {
         'jobs': jobs,
         'show_next': show_next,
+        'show_previous': show_previous,
     })

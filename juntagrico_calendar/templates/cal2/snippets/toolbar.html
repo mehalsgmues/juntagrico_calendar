@@ -38,7 +38,7 @@
                                     <div class="custom-control custom-checkbox mr-sm-2{% if area in own_areas %} own-area{% endif %}{% if area.core %} core-area{% endif %}">
                                         <input type="checkbox" class="custom-control-input" id="area_filter_{{ area.id }}" value="{{ area.id }}">
                                         <label class="custom-control-label text-nowrap" for="area_filter_{{ area.id }}">
-                                            {{ area.name }}
+                                            {{ area.name }} {# TODO: add symbol on core and own areas? Or change color. #}
                                         </label>
                                     </div>
                                 {% endfor %}
@@ -145,7 +145,7 @@
                     data-toggle="dropdown" aria-expanded="false">
                 <i class="fa-regular fa-clock"></i> <span></span>
             </button>
-            <div class="dropdown-menu dropdown-menu-right">
+            <div class="dropdown-menu dropdown-menu-right dropdown-menu-md-left">
                 <h5 class="text-center">nach</h5>
                 <div class="btn-group time-after-select" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-light">6</button>

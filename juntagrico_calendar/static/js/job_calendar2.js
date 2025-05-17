@@ -5,6 +5,7 @@ $(function () {
 
     $(window).on('scroll', update_month_button)
     update_month_button()
+    apply_day_filters()
 
     $('#weekday_select').children().on('click', function () {
         let btn = $(this)
@@ -97,13 +98,22 @@ $(function () {
 })
 
 function init_load_more_jobs() {
-    $('#load_later_jobs a').on('click.load_more', function(e) {
+    $('#load_next_jobs a, #load_previous_jobs a').on('click.load_more', function(e) {
         let btn = $(this)
+        let follow = btn.parent().next()
         btn.hide().siblings().removeClass('d-none')  // show loader
         $.get(btn.data('url'), function(data) {
-            btn.parent().replaceWith($(data).children())
+            let new_content = $(data).children()
+            let original_pos
+            if (follow.length) {
+                original_pos = follow.offset().top
+            }
+            btn.parent().replaceWith(new_content)
             init_load_more_jobs()
             apply_filters()
+            if (original_pos) {
+                window.scrollBy(0, follow.offset().top - original_pos)
+            }
         })
         e.preventDefault()
         return false
@@ -123,8 +133,6 @@ function init_month_selection() {
                 apply_filters()
                 update_month_button()
             })
-            e.preventDefault()
-            return false
         }
         // otherwise do default action
     })
@@ -148,8 +156,12 @@ function update_month_button() {
 function apply_filters() {
     let job_cards = $('.job-details')
     let all_job_cards = job_cards
-    let search = $('#job_search_field').val()
-    job_cards = job_cards.has('p:contains("' + search + '")')  // TODO: make this case insensitive
+    let search = $('#job_search_field').val().toLowerCase()
+    if (search) {
+        job_cards = job_cards.filter(function() {
+            return $(this).find('p').text().toLowerCase().indexOf(search) !== -1
+        })
+    }
 
     // filter by area
     let selected_areas = $('#area_inputs input:checked').map(function() {
@@ -232,6 +244,9 @@ function apply_day_filters() {
         $('.job-day-' + $(this).data('weekday')).hide()
     })
     $('.job-day:not(:has(.job-details:visible))').hide()
+    $('.no-jobs').each(function() {
+        $(this).toggle($(this).siblings(".job-day:visible").length == 0)
+    })
 }
 
 function collect_areas() {
