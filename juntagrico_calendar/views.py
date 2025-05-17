@@ -3,19 +3,17 @@ import re
 from datetime import timedelta
 
 from dateutil.relativedelta import relativedelta
-from dateutil.rrule import rrule, MONTHLY
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q, Max
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.timezone import template_localtime
 
 from juntagrico.entity.jobs import JobType, RecuringJob, OneTimeJob, Job, ActivityArea
 from juntagrico.view_decorators import highlighted_menu
 
-from juntagrico_calendar.util.temporal import get_datetime_from_iso8601_string
+from juntagrico_calendar.util.temporal import get_datetime_from_iso8601_string, get_job_month_range
 
 
 @login_required
@@ -111,22 +109,12 @@ def job_calendar2(request, year=None, month=None):
         Q(jobtype__recuringjob__time__date__gte=today) | Q(onetimejob__time__date__gte=today)
     ).distinct().order_by('name')
 
-    # get months with jobs
-    last_date = template_localtime(Job.objects.aggregate(Max('time'))['time__max'])
-    if last_date:
-        months = [
-            (dt.date(), 'F Y' if dt.year != today.year else 'F')
-            for dt in rrule(MONTHLY, dtstart=today.replace(day=1), until=datetime.date(last_date.year, last_date.month, 1))
-        ]
-    else:
-        months = []
-
     return render(request, 'cal2/job_calendar.html', {
         'jobs': jobs,
         'show_next': show_next,
         'show_previous': show_previous,
         'areas': areas,
-        'months': months,
+        'months': get_job_month_range(today),
     })
 
 
@@ -150,4 +138,11 @@ def partial_jobs_by_month(request, year, month):
         'jobs': jobs,
         'show_next': show_next,
         'show_previous': show_previous,
+    })
+
+
+@login_required
+def partial_calendar(request):
+    return render(request, 'cal2/snippets/calendar.html', {
+        'months': get_job_month_range(),
     })

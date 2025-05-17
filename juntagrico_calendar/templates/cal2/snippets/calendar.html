@@ -1,0 +1,5 @@
+<div class="row">
+    {% for month in months %}
+        <div class="col-12 col-sm-6 col-xl-4">{% calendar month.0.year month.0.month %}</div>
+    {% endfor %}
+</div>

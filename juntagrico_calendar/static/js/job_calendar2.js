@@ -3,6 +3,8 @@ $(function () {
     init_load_more_jobs()
     init_month_selection()
 
+    $('.calendar-btn').on('show.bs.dropdown', load_calendar)
+
     $(window).on('scroll', update_month_button)
     update_month_button()
     apply_day_filters()
@@ -136,6 +138,20 @@ function init_month_selection() {
         }
         // otherwise do default action
     })
+}
+
+function load_calendar() {
+    let group = $(this)
+    if (group.find('.unloaded')) {
+        group.find('.calendar-drowpdown').load(group.data('url'), init_calendar)
+    }
+    init_calendar()
+}
+
+function init_calendar() {
+    $('.calendar-month td').removeClass('calendar-today')
+    let today = new Date()
+    $('.calendar-month-' + today.getFullYear() + '-' + (today.getMonth() + 1) + ' .calendar-day-' + today.getDate()).addClass('calendar-today')
 }
 
 function update_month_button() {

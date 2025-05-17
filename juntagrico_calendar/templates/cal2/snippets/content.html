@@ -29,7 +29,8 @@
                 </div>
                 {% regroup month.list by time|get_local_date as jobs_by_day %}
                 {% for day in jobs_by_day %}
-                    <div class="job-day job-day-{{ day.grouper|date:'w' }} mt-4">
+                    <div class="job-day job-day-{{ day.grouper|date:'w' }} mt-4"
+                         id="job-day-{{ day.grouper|date:'Y-n-j' }}">
                         <div class="job-day-title float-left d-none"> {# TODO: cleanup #}
                             <strong>{{ day.grouper|date:'D' }}</strong>
                             <br>

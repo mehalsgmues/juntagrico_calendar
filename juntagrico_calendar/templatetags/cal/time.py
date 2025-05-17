@@ -4,6 +4,7 @@ import datetime
 from django.db.models import Min, F, Count, FloatField, Subquery, OuterRef
 from django.db.models.functions import TruncDay, Cast
 from django.template.defaultfilters import register
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.formats import date_format
 from django.utils.translation import gettext as _
@@ -27,8 +28,10 @@ class BootstrapCalendar(calendar.HTMLCalendar):
     def __init__(self, day_dots, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.day_dots = day_dots
+        self.url = ''
 
     def formatmonth(self, theyear, themonth, withyear=True):
+        self.url = reverse('jobs-by-month', args=[theyear, themonth]) + f'#job-day-{theyear}-{themonth}-'
         self.cssclass_month += f' calendar-month-{theyear}-{themonth}'
         return super().formatmonth(theyear, themonth, withyear)
 
@@ -40,10 +43,14 @@ class BootstrapCalendar(calendar.HTMLCalendar):
         return f'<th class="{self.cssclasses_weekday_head[day]}">{_(calendar.day_abbr[day])}</th>'
 
     def formatday(self, day, weekday):
-        # TODO: highlight today
         if day != 0:
-            return (f'<td class="calendar-day-{day} text-center">{day}'
-                    f'<div class="calendar-dot {self.day_dots.get(day, "")}"></div></td>')
+            dots = self.day_dots.get(day, "")
+            if dots != "":
+                day_text = f'<a href="{self.url}{day}" class="stretched-link">{day}</a>'
+            else:
+                day_text = day
+            return (f'<td class="calendar-day-{day} text-center position-relative">{day_text}'
+                    f'<div class="calendar-dot {dots}"></div></td>')
         return super().formatday(day, weekday)
 
 
