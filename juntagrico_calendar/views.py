@@ -4,11 +4,13 @@ from datetime import timedelta
 
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Q, Max, Min
+from django.db.models.functions import TruncMonth
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.timezone import template_localtime
 
 from juntagrico.entity.jobs import JobType, RecuringJob, OneTimeJob, Job, ActivityArea
 from juntagrico.view_decorators import highlighted_menu
@@ -32,7 +34,7 @@ def jobs_as_json(request):
     """
     now = timezone.localtime()
     print(now)
-    start = get_datetime_from_iso8601_string(request.GET.get('start'),  now)
+    start = get_datetime_from_iso8601_string(request.GET.get('start'), now)
     end = get_datetime_from_iso8601_string(request.GET.get('end'), start + timedelta(days=7))
     search = request.GET.get('search')
 
@@ -40,7 +42,7 @@ def jobs_as_json(request):
         jobs = Job.objects.filter(time__range=(start, end))
     elif search != '':
         # if search term is passed, only search in parts, that frontend can't find
-        jobtypes = JobType.objects.filter(recuringjob__time__range=(start, end))\
+        jobtypes = JobType.objects.filter(recuringjob__time__range=(start, end)) \
             .distinct().filter(description__iregex=search)
         rjobs = RecuringJob.objects.filter(time__range=(start, end), type__in=jobtypes)
         otjobs = OneTimeJob.objects.filter(time__range=(start, end), description__iregex=search)
@@ -49,11 +51,11 @@ def jobs_as_json(request):
         jobs = []
 
     def text_ellipsis(x, limit):
-        return x[:limit]+'...' if len(x) > limit else x
+        return x[:limit] + '...' if len(x) > limit else x
 
     def search_result_context(job):  # provide some context around the search results
         if search:
-            result = re.findall(r'.{0,5}'+search+r'.{0,5}', job.type.description)
+            result = re.findall(r'.{0,5}' + search + r'.{0,5}', job.type.description)
             return ' '.join(result)
         else:
             return ''
@@ -90,7 +92,6 @@ def job_calendar2(request, year=None, month=None, partial=False):
     """
     Job calendar/agenda view
     """
-    # TODO: only show full jobs by default to people that coordinate areas or can create/edit jobs
     start_date = today = datetime.date.today()
     if year is not None and month is not None:
         start_date = max(datetime.date(year=year, month=month, day=1), today)
@@ -103,7 +104,7 @@ def job_calendar2(request, year=None, month=None, partial=False):
 
     show_next = False
     if Job.objects.filter(time__date__gte=until).exists():
-        show_next=until
+        show_next = until
 
     context = {
         'jobs': jobs,
@@ -130,4 +131,34 @@ def job_calendar2(request, year=None, month=None, partial=False):
 def partial_calendar(request):
     return render(request, 'cal2/snippets/calendar.html', {
         'months': get_job_month_range(),
+    })
+
+
+@login_required
+@highlighted_menu('jobs')
+def job_archive(request, year=None, month=None):
+    job_range = Job.objects.aggregate(Max('time'), Min('time'))
+    first = template_localtime(job_range['time__min'])
+    last = template_localtime(job_range['time__max'])
+
+    today = datetime.date.today()
+    year = year or today.year
+    month = month or today.month
+
+    months_with_jobs = [
+        m.date() for m in
+        Job.objects.annotate(month=TruncMonth('time')).filter(month__year=year).distinct().values_list(
+            'month', flat=True
+        )
+    ]
+
+    return render(request, 'cal2/archive.html', {
+        'years': range(first.year, last.year + 1),
+        'months': [datetime.date(year, m, 1) for m in range(1, 13)],
+        'months_with_jobs': months_with_jobs,
+        'selected': {
+            'year': year,
+            'month': month,
+        },
+        'jobs': Job.objects.filter(time__date__year=year, time__date__month=month).order_by('time')
     })

@@ -32,17 +32,17 @@ class BootstrapCalendar(calendar.HTMLCalendar):
         self.partial_url = ''
 
     def formatmonth(self, theyear, themonth, withyear=True):
-        self.url = reverse('jobs-by-month', args=[theyear, themonth]) + f'#job-day-{theyear}-{themonth}-'
+        self.url = f'#job-day-{theyear}-{themonth}-'
         self.partial_url = reverse('partial-jobs-by-month', args=[theyear, themonth])
         self.cssclass_month += f' calendar-month-{theyear}-{themonth}'
         return super().formatmonth(theyear, themonth, withyear)
 
-    def formatmonthname(self, theyear, themonth, withyear = True):
+    def formatmonthname(self, theyear, themonth, withyear=True):
         month = date_format(datetime.date(theyear, themonth, 1), 'F Y' if withyear else 'F')
-        return f'<tr><th colspan="7" class="{self.cssclass_month}">{month}</th></tr>'
+        return f'<tr><th colspan="7" class="{self.cssclass_month_head}">{month}</th></tr>'
 
     def formatweekday(self, day):
-        return f'<th class="{self.cssclasses_weekday_head[day]}">{_(calendar.day_abbr[day])}</th>'
+        return f'<th class="{self.cssclasses_weekday_head[day]} text-center">{_(calendar.day_abbr[day])}</th>'
 
     def formatday(self, day, weekday):
         if day != 0:
@@ -57,23 +57,34 @@ class BootstrapCalendar(calendar.HTMLCalendar):
 
 
 @register.simple_tag(name='calendar')
-def print_calendar(year=None, month=None):
+def print_calendar(year=None, month=None, mode=''):
     today = datetime.date.today()
     year = year or today.year
     month = month or today.month
-    start_date = max(datetime.date(year, month, 1), today)
+    archive = mode.lower() == 'archive'
+
+    start_date = datetime.date(year, month, 1)
     end_date = datetime.date(year, month, calendar.monthrange(year, month)[1])
-    # color dots where assignments are available
-    job_status = Job.objects.filter(time__date__gte=start_date, time__date__lte=end_date).alias(
-        used_slots=Subquery(Assignment.objects.filter(job=OuterRef('pk')).annotate(count=Count('pk')).values('count')[:1]),
-    ).annotate(
-        # Using subquery, because django and/or db doesn't do aggregation of aggregated value.
-        status= F('used_slots') / Cast(F('slots'), output_field=FloatField()),
-        date=TruncDay('time__date')
-    ).values('date').annotate(lowest_status=Min('status', default=0)).values_list('date', 'lowest_status')
-    job_status = {
-        date.day: ('badge-danger' if status < 0.25 else 'badge-warning')
-        for date, status in job_status
-        if status < 1
-    }
+
+    if archive:
+        jobs = Job.objects.filter(time__date__gte=start_date, time__date__lte=end_date).annotate(
+            date=TruncDay('time__date')
+        ).values_list('date', flat=True)
+        job_status = {date.day: 'badge-dark' for date in jobs}
+    else:
+        # normal mode doesn't display past jobs
+        start_date = max(start_date, today)
+        # color dots where assignments are available
+        job_status = Job.objects.filter(time__date__gte=start_date, time__date__lte=end_date).alias(
+            used_slots=Subquery(Assignment.objects.filter(job=OuterRef('pk')).annotate(count=Count('pk')).values('count')[:1]),
+        ).annotate(
+            # Using subquery, because django and/or db doesn't do aggregation of aggregated value.
+            status= F('used_slots') / Cast(F('slots'), output_field=FloatField()),
+            date=TruncDay('time__date')
+        ).values('date').annotate(lowest_status=Min('status', default=0)).values_list('date', 'lowest_status')
+        job_status = {
+            date.day: ('badge-danger' if status < 0.25 else 'badge-warning')
+            for date, status in job_status
+            if status < 1
+        }
     return mark_safe(BootstrapCalendar(job_status).formatmonth(year, month))

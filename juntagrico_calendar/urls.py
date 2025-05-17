@@ -8,4 +8,6 @@ urlpatterns = [
     path('jobs/<int:year>/<int:month>', views.job_calendar2, name='jobs-by-month'),
     path('jobs/<int:year>/<int:month>/partial', views.job_calendar2, {'partial': True}, name='partial-jobs-by-month'),
     path('jobs/calendar/partial', views.partial_calendar, name='job-calendar-partial'),
+    path('jobs/archive', views.job_archive, name='jobs-archive'),
+    path('jobs/archive/<int:year>/<int:month>', views.job_archive, name='jobs-archive-by-month'),
 ]

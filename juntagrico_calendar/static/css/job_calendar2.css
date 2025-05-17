@@ -147,3 +147,20 @@
 #load_next_jobs:not(:last-child) {
     display: none;
 }
+
+/* Archive */
+.job-calendar-archive .job-month-title-text {
+    display: none;
+}
+
+.job-calendar-archive .job-started {
+    opacity: 1;
+}
+
+.archive-calendar th.month {
+    display: none;
+}
+
+.archive-calendar {
+    width: max-content;
+}
