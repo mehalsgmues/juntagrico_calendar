@@ -107,15 +107,15 @@
 }
 
 @media (min-width: 576px) {
-  .calendar-drowpdown {
-    width: 500px;
-  }
+    .calendar-drowpdown {
+        width: 500px;
+    }
 }
 
 @media (min-width: 1200px) {
-  .calendar-drowpdown {
-    width: 810px;
-  }
+    .calendar-drowpdown {
+        width: 810px;
+    }
 }
 
 .calendar-drowpdown a {
@@ -126,6 +126,10 @@
     background-color: black;
     color: white;
     font-weight: bold;
+}
+
+.calendar-today a {
+    color: white;
 }
 
 .job-core {

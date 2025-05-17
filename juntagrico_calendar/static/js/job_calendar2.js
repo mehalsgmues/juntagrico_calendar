@@ -1,13 +1,27 @@
 $(function () {
-    // load more jobs
+    // init content
     init_load_more_jobs()
-    init_month_selection()
+
+    apply_day_filters()
+
+    // initialize toolbar
+    $('#job_search_field').on('change keyup', apply_filters)
+
+    init_areas()
+
+    $('#free_slot_select').children().on('click', toggle_and_filter)
+    $('#free_slot_reset').on('click', function(e) {
+        $('#free_slot_select button').removeClass('btn-primary').addClass('btn-light')
+        apply_filters()
+        e.preventDefault()
+        return false
+    })
 
     $('.calendar-btn').on('show.bs.dropdown', load_calendar)
 
     $(window).on('scroll', update_month_button)
     update_month_button()
-    apply_day_filters()
+    init_month_selection()
 
     $('#weekday_select').children().on('click', function () {
         let btn = $(this)
@@ -22,80 +36,29 @@ $(function () {
         btn.toggleClass(['btn-light', 'btn-primary'])
         let mirror_btn = $('#weekday_select button[data-weekday="' + btn.data('weekday') + '"]')
         mirror_btn.toggleClass(['btn-secondary', 'btn-primary'])
-        // update dropdown button
-        let count_days = $('#weekday_select_dropdown .btn-primary').length
-        let text = 'Tag'
-        if (count_days == 1) {
-            text = '1 Tag'
-        } else if (count_days > 1) {
-            text = count_days + ' Tage'
-        }
-        $('#weekday_dropdown')
-            .toggleClass('btn-secondary', count_days == 0)
-            .toggleClass('btn-primary', count_days > 0)
-            .text(text)
-        // apply
-        apply_day_filters()
+        update_weekday_filter()
         e.preventDefault()
         return false
     })
 
-    $('.time-after-select, .time-before-select, #free-slot-select').children().on('click', function (e) {
-        let btn = $(this)
-        btn.siblings().removeClass('btn-primary').addClass('btn-light')
-        btn.toggleClass(['btn-light', 'btn-primary'])
+    $('#weekday_reset').on('click', function(e) {
+        $('#weekday_select button').removeClass('btn-primary').addClass('btn-secondary')
+        $('#weekday_select_dropdown button').removeClass('btn-primary').addClass('btn-light')
+        update_weekday_filter()
+        e.preventDefault()
+        return false
+    })
+
+    $('.time-after-select, .time-before-select').children().on('click', toggle_and_filter)
+    $('#time_reset').on('click', function(e) {
+        $('.time-after-select button, .time-before-select button').removeClass('btn-primary').addClass('btn-light')
         apply_filters()
         e.preventDefault()
         return false
     })
 
-    $('#job_search_field').on('change keyup', apply_filters)
-
-    $('#job_area_dropdown').on('click', collect_areas)
-    $('#all_area_btn').on('click', function(e) {
-        let btn = $(this)
-        btn.removeClass('btn-light').addClass('btn-primary')
-        btn.siblings().removeClass('btn-primary').addClass('btn-light')
-        $('#job_area_dropdown').removeClass('btn-primary').addClass('btn-secondary').text('Alle Bereiche')  // TODO: Translate
-        $('#area_inputs input').prop('checked', false)
-        apply_filters()
-        e.preventDefault()
-        return false
-    })
-    $('#core_area_btn').on('click', function(e) {
-        let btn = $(this)
-        btn.removeClass('btn-light').addClass('btn-primary')
-        btn.siblings().removeClass('btn-primary').addClass('btn-light')
-        $('#job_area_dropdown').removeClass('btn-secondary').addClass('btn-primary').text('Nur Kernbereiche')  // TODO: Translate
-        let core_areas = $('#area_inputs .core-area input')
-        core_areas.prop('checked', true)
-        $('#area_inputs input').not(core_areas).prop('checked', false)
-        apply_filters()
-        e.preventDefault()
-        return false
-    })
-    $('#own_area_btn').on('click', function(e) {
-        // TODO: deduplicate with above
-        let btn = $(this)
-        btn.removeClass('btn-light').addClass('btn-primary')
-        btn.siblings().removeClass('btn-primary').addClass('btn-light')
-        $('#job_area_dropdown').removeClass('btn-secondary').addClass('btn-primary').text('Nur meine Bereiche')  // TODO: Translate
-        let core_areas = $('#area_inputs .own-area input')
-        core_areas.prop('checked', true)
-        $('#area_inputs input').not(core_areas).prop('checked', false)
-        apply_filters()
-        e.preventDefault()
-        return false
-    })
-    $('#area_inputs input').prop('checked', false).on('change', function() {
-        $('#area_btn button').removeClass('btn-primary').addClass('btn-light')
-        let count = $('#area_inputs input:checked').length
-        if (count > 0) {
-            $('#job_area_dropdown').removeClass('btn-secondary').addClass('btn-primary').text(count + ' Bereiche') // TODO: Translate
-            apply_filters()
-        } else {
-            $('#all_area_btn').trigger('click')
-        }
+    $('.dropdown-apply').on('click', function() {
+        $(this).closest('.dropdown').find('.dropdown-toggle').dropdown('hide')
     })
 })
 
@@ -119,6 +82,57 @@ function init_load_more_jobs() {
         })
         e.preventDefault()
         return false
+    })
+}
+
+function init_areas() {
+    $('#all_area_btn').on('click', function(e) {
+        let btn = $(this)
+        btn.removeClass('btn-light').addClass('btn-primary')
+        btn.siblings().removeClass('btn-primary').addClass('btn-light')
+        $('#job_area_dropdown').removeClass('btn-primary').addClass('btn-secondary').text('Alle Bereiche ')  // TODO: Translate
+        $('#area_inputs input').prop('checked', false)
+        apply_filters()
+        e.preventDefault()
+        return false
+    })
+    $('#core_area_btn').on('click', function(e) {
+        let btn = $(this)
+        btn.removeClass('btn-light').addClass('btn-primary')
+        btn.siblings().removeClass('btn-primary').addClass('btn-light')
+        $('#job_area_dropdown').removeClass('btn-secondary').addClass('btn-primary').text('Nur Kernbereiche ')  // TODO: Translate
+        let core_areas = $('#area_inputs .core-area input')
+        core_areas.prop('checked', true)
+        $('#area_inputs input').not(core_areas).prop('checked', false)
+        apply_filters()
+        e.preventDefault()
+        return false
+    })
+    $('#own_area_btn').on('click', function(e) {
+        // TODO: deduplicate with above
+        let btn = $(this)
+        btn.removeClass('btn-light').addClass('btn-primary')
+        btn.siblings().removeClass('btn-primary').addClass('btn-light')
+        $('#job_area_dropdown').removeClass('btn-secondary').addClass('btn-primary').text('Nur meine Bereiche ')  // TODO: Translate
+        let core_areas = $('#area_inputs .own-area input')
+        core_areas.prop('checked', true)
+        $('#area_inputs input').not(core_areas).prop('checked', false)
+        apply_filters()
+        e.preventDefault()
+        return false
+    })
+    $('#area_reset').on('click', function() {
+        $('#all_area_btn').trigger('click')
+    })
+    $('#area_inputs input').prop('checked', false).on('change', function() {
+        $('#area_btn button').removeClass('btn-primary').addClass('btn-light')
+        let count = $('#area_inputs input:checked').length
+        if (count > 0) {
+            $('#job_area_dropdown').removeClass('btn-secondary').addClass('btn-primary').text(count + ' Bereiche ') // TODO: Translate
+            apply_filters()
+        } else {
+            $('#all_area_btn').trigger('click')
+        }
     })
 }
 
@@ -169,6 +183,32 @@ function update_month_button() {
     $('.current-month').text(current.element.data('title'))
 }
 
+function update_weekday_filter() {
+    // update dropdown button
+    let count_days = $('#weekday_select_dropdown .btn-primary').length
+    let text = 'Tag'
+    if (count_days == 1) {
+        text = '1 Tag'
+    } else if (count_days > 1) {
+        text = count_days + ' Tage'
+    }
+    $('#weekday_dropdown')
+        .toggleClass('btn-secondary', count_days == 0)
+        .toggleClass('btn-primary', count_days > 0)
+        .text(text)
+    // apply
+    apply_day_filters()
+}
+
+function toggle_and_filter(event) {
+    let btn = $(this)
+    btn.siblings().removeClass('btn-primary').addClass('btn-light')
+    btn.toggleClass(['btn-light', 'btn-primary'])
+    apply_filters()
+    event.preventDefault()
+    return false
+}
+
 function apply_filters() {
     let job_cards = $('.job-details')
     let all_job_cards = job_cards
@@ -190,7 +230,7 @@ function apply_filters() {
     }
 
     // slot and date filter
-    let selected_free_slots = $('#free-slot-select .btn-primary')
+    let selected_free_slots = $('#free_slot_select .btn-primary')
     let required_free_slots = parseInt(selected_free_slots.data('value') || selected_free_slots.text()) || 0
 
     let earliest_start_time = parseFloat($('.time-after-select .btn-primary').text()) || false
@@ -263,24 +303,4 @@ function apply_day_filters() {
     $('.no-jobs').each(function() {
         $(this).toggle($(this).siblings(".job-day:visible").length == 0)
     })
-}
-
-function collect_areas() {
-    let area_filter_template = $('#area_filter_template')
-    let area_inputs = $('#area_inputs')
-    if (area_inputs.children().length === 0) {
-        let areas = new Map()
-        $('.job-details').each(function () {
-            let $this = $(this)
-            areas.set($this.data('area'), $this.find('.job-area').text().trim())
-        })
-        areas = new Map([...areas].sort((a, b) => String(a[1]).localeCompare(b[1])))
-        for (const [area, label] of areas) {
-            let elem = area_filter_template.clone(true)
-            elem.find('input').attr('id', 'area_filter_' + area)
-            elem.find('label').attr('for', 'area_filter_' + area).text(label)
-            elem.removeClass('d-none')
-            area_inputs.append(elem)
-        }
-    }
 }

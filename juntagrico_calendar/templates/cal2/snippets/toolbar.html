@@ -32,7 +32,7 @@
                             <input type="checkbox" class="custom-control-input" id="area_template">
                             <label class="custom-control-label text-nowrap" for="area_template"></label>
                         </div>
-                        <div id="area_inputs">
+                        <div id="area_inputs" class="mb-2">
                             {% with own_areas=request.user.member.areas.all %}
                                 {% for area in areas %}
                                     <div class="custom-control custom-checkbox mr-sm-2{% if area in own_areas %} own-area{% endif %}{% if area.core %} core-area{% endif %}">
@@ -44,7 +44,12 @@
                                 {% endfor %}
                             {% endwith %}
                         </div>
-                        <button type="submit" class="btn btn-primary">Anwenden</button>
+                        <div class="mt-3">
+                            <a class="btn btn-secondary mb-2 mr-2" id="area_reset">
+                                <i class="fa-solid fa-rotate-left"></i> {% trans "Zurücksetzen" %}
+                            </a>
+                            <a class="btn btn-outline-primary mb-2 mr-2 dropdown-apply">{% trans "Anwenden" %}</a>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -55,7 +60,7 @@
                     <span></span> <i class="fa-solid fa-user"></i>
                 </button>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <div id="free-slot-select" class="btn-group mx-3" role="group" aria-label="{% trans "Filtere nach freien Plätzen" %}">
+                    <div id="free_slot_select" class="btn-group mx-3" role="group" aria-label="{% trans "Filtere nach freien Plätzen" %}">
                         <button type="button" class="btn btn-light text-nowrap" data-value="1">{% trans "Nur für mich" %}</button>
                         <button type="button" class="btn btn-light">2</button>
                         <button type="button" class="btn btn-light">3</button>
@@ -66,8 +71,11 @@
                         <button type="button" class="btn btn-light">8</button>
                         <button type="button" class="btn btn-light">9</button>
                     </div>
-                    <p class="text-center mt-2">
-                        <button type="button" class="btn btn-secondary"><i class="fa-solid fa-rotate-left"></i> Zurücksetzen</button>
+                    <p class="text-center mt-3">
+                        <a class="btn btn-secondary mb-2 mr-2" id="free_slot_reset">
+                            <i class="fa-solid fa-rotate-left"></i> {% trans "Zurücksetzen" %}
+                        </a>
+                        <a class="btn btn-outline-primary mb-2 mr-2 dropdown-apply">{% trans "Anwenden" %}</a>
                     </p>
                 </div>
             </div>
@@ -125,7 +133,6 @@
                 {% trans "Tag" %}
             </button>
             <div class="dropdown-menu dropdown-menu-right">
-                {# TODO: make this work with .weekday_select #}
                 <div class="btn-group mr-2 mb-2" id="weekday_select_dropdown"
                      role="group" aria-label="Weekday selection">
                     <button type="button" class="btn btn-light" data-weekday="1">{% trans "Mon" %}</button>
@@ -136,6 +143,12 @@
                     <button type="button" class="btn btn-light" data-weekday="6">{% trans "Sat" %}</button>
                     <button type="button" class="btn btn-light" data-weekday="0">{% trans "Sun" %}</button>
                 </div>
+                <p class="text-center mt-3">
+                    <a class="btn btn-secondary mb-2 mr-2" id="weekday_reset">
+                        <i class="fa-solid fa-rotate-left"></i> {% trans "Zurücksetzen" %}
+                    </a>
+                    <a class="btn btn-outline-primary mb-2 mr-2 dropdown-apply">{% trans "Anwenden" %}</a>
+                </p>
             </div>
         </div>
 
@@ -167,9 +180,11 @@
                     <button type="button" class="btn btn-light">18</button>
                     <button type="button" class="btn btn-light">20</button>
                 </div>
-                <p class="text-center mt-2">
-                    <button type="button" class="btn btn-secondary">Zurücksetzen</button>
-                    <button type="button" class="btn btn-primary">Anwenden</button>
+                <p class="text-center mt-3">
+                    <a class="btn btn-secondary mb-2 mr-2" id="time_reset">
+                        <i class="fa-solid fa-rotate-left"></i> {% trans "Zurücksetzen" %}
+                    </a>
+                    <a class="btn btn-outline-primary mb-2 mr-2 dropdown-apply">{% trans "Anwenden" %}</a>
                 </p>
             </div>
         </div>
