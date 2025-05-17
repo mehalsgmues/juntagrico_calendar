@@ -29,9 +29,11 @@ class BootstrapCalendar(calendar.HTMLCalendar):
         super().__init__(*args, **kwargs)
         self.day_dots = day_dots
         self.url = ''
+        self.partial_url = ''
 
     def formatmonth(self, theyear, themonth, withyear=True):
         self.url = reverse('jobs-by-month', args=[theyear, themonth]) + f'#job-day-{theyear}-{themonth}-'
+        self.partial_url = reverse('partial-jobs-by-month', args=[theyear, themonth])
         self.cssclass_month += f' calendar-month-{theyear}-{themonth}'
         return super().formatmonth(theyear, themonth, withyear)
 
@@ -46,7 +48,7 @@ class BootstrapCalendar(calendar.HTMLCalendar):
         if day != 0:
             dots = self.day_dots.get(day, "")
             if dots != "":
-                day_text = f'<a href="{self.url}{day}" class="stretched-link">{day}</a>'
+                day_text = f'<a href="{self.url}{day}" data-url="{self.partial_url}" class="stretched-link">{day}</a>'
             else:
                 day_text = day
             return (f'<td class="calendar-day-{day} text-center position-relative">{day_text}'

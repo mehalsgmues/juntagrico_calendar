@@ -3,7 +3,7 @@
 {% load i18n %}
 
 <div id="calendar-toolbar" class="py-2">
-    <div class="btn-toolbar mb-2" role="toolbar" aria-label="Toolbar with button groups">
+    <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
         <div id="job_search" class="mr-2 mb-2">
             <label class="sr-only" for="job_search_field">{% trans "Suchen" %}</label>
             <div class="input-group">
@@ -45,7 +45,7 @@
                             {% endwith %}
                         </div>
                         <div class="mt-3">
-                            <a class="btn btn-secondary mb-2 mr-2" id="area_reset">
+                            <a class="btn btn-outline-secondary mb-2 mr-2" id="area_reset">
                                 <i class="fa-solid fa-rotate-left"></i> {% trans "Zurücksetzen" %}
                             </a>
                             <a class="btn btn-outline-primary mb-2 mr-2 dropdown-apply">{% trans "Anwenden" %}</a>
@@ -72,7 +72,7 @@
                         <button type="button" class="btn btn-light">9</button>
                     </div>
                     <p class="text-center mt-3">
-                        <a class="btn btn-secondary mb-2 mr-2" id="free_slot_reset">
+                        <a class="btn btn-outline-secondary mb-2 mr-2" id="free_slot_reset">
                             <i class="fa-solid fa-rotate-left"></i> {% trans "Zurücksetzen" %}
                         </a>
                         <a class="btn btn-outline-primary mb-2 mr-2 dropdown-apply">{% trans "Anwenden" %}</a>
@@ -144,7 +144,7 @@
                     <button type="button" class="btn btn-light" data-weekday="0">{% trans "Sun" %}</button>
                 </div>
                 <p class="text-center mt-3">
-                    <a class="btn btn-secondary mb-2 mr-2" id="weekday_reset">
+                    <a class="btn btn-outline-secondary mb-2 mr-2" id="weekday_reset">
                         <i class="fa-solid fa-rotate-left"></i> {% trans "Zurücksetzen" %}
                     </a>
                     <a class="btn btn-outline-primary mb-2 mr-2 dropdown-apply">{% trans "Anwenden" %}</a>
@@ -181,7 +181,7 @@
                     <button type="button" class="btn btn-light">20</button>
                 </div>
                 <p class="text-center mt-3">
-                    <a class="btn btn-secondary mb-2 mr-2" id="time_reset">
+                    <a class="btn btn-outline-secondary mb-2 mr-2" id="time_reset">
                         <i class="fa-solid fa-rotate-left"></i> {% trans "Zurücksetzen" %}
                     </a>
                     <a class="btn btn-outline-primary mb-2 mr-2 dropdown-apply">{% trans "Anwenden" %}</a>

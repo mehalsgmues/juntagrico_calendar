@@ -68,7 +68,7 @@ function init_load_more_jobs() {
         let follow = btn.parent().next()
         btn.hide().siblings().removeClass('d-none')  // show loader
         $.get(btn.data('url'), function(data) {
-            let new_content = $(data).children()
+            let new_content = $(data).filter('#jobs_calendar').children()
             let original_pos
             if (follow.length) {
                 original_pos = follow.offset().top
@@ -136,24 +136,6 @@ function init_areas() {
     })
 }
 
-function init_month_selection() {
-    // check for each month if it is already loaded. If not make it link to a new page with that month
-    $('.month-selection').children().on('click.month', function(e) {
-        let month_link = $(this)
-        let href = month_link.attr('href')
-        if (href[0] === '#' && !$(href).length) {
-            // load missing content
-            // TODO: Show loader
-            $('#jobs_calendar').load(month_link.data('url') + ' #jobs_calendar > *', function() {
-                init_load_more_jobs()
-                apply_filters()
-                update_month_button()
-            })
-        }
-        // otherwise do default action
-    })
-}
-
 function load_calendar() {
     let group = $(this)
     if (group.find('.unloaded')) {
@@ -169,16 +151,18 @@ function init_calendar() {
     $('.calendar-month-' + today.getFullYear() + '-' + (today.getMonth() + 1) + ' .calendar-day-' + today.getDate()).addClass('calendar-today')
 
     // show spinner if new page loads
-    $('.calendar-month a').off('click.calendar').on('click.calendar', function() {
+    $('.calendar-month a').off('click.calendar').on('click.calendar', function(e) {
         let link = $(this)
-        let query = link.attr('href').split('#').pop()
-        if (query && $('#' + query).length) {
+        let fragment = link.attr('href').split('#').pop()
+        if (fragment && $('#' + fragment).length) {
             // ensure that page is not reloaded unnecessarily
-            link.attr('href', '#' + query)
+            link.attr('href', '#' + fragment)
         } else {
-            // Show loader and let new page load
-            $('#jobs_calendar').hide()
-            $('#jobs_calendar_loader').removeClass('d-none')
+            // load selected month and jump to selected day
+            reload(link.data('url'), function() {
+                window.location = '#' + fragment
+            })
+            e.preventDefault()
         }
     })
 }
@@ -196,6 +180,19 @@ function update_month_button() {
         }
     })
     $('.current-month').text(current.element.data('title'))
+}
+
+function init_month_selection() {
+    // check for each month if it is already loaded. If not make it link to a new page with that month
+    $('.month-selection').children().on('click.month', function(e) {
+        let month_link = $(this)
+        let href = month_link.attr('href')
+        if (href[0] === '#' && !$(href).length) {
+            // load missing content
+            reload(month_link.data('url'))
+        }
+        // otherwise do default action: jump to anchor
+    })
 }
 
 function update_weekday_filter() {
@@ -317,5 +314,18 @@ function apply_day_filters() {
     $('.job-day:not(:has(.job-details:visible))').hide()
     $('.no-jobs').each(function() {
         $(this).toggle($(this).siblings(".job-day:visible").length == 0)
+    })
+}
+
+function reload(url, callback) {
+    $('#jobs_calendar_loader').removeClass('d-none')
+    $('#jobs_calendar').empty().load(url + ' #jobs_calendar > *', function() {
+        $('#jobs_calendar_loader').addClass('d-none')
+        init_load_more_jobs()
+        apply_filters()
+        update_month_button()
+        if (callback) {
+            callback()
+        }
     })
 }

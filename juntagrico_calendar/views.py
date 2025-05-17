@@ -86,44 +86,15 @@ def jobs_as_json(request):
 
 @login_required
 @highlighted_menu('jobs')
-def job_calendar2(request, year=None, month=None):
+def job_calendar2(request, year=None, month=None, partial=False):
     """
     Job calendar/agenda view
     """
     # TODO: only show full jobs by default to people that coordinate areas or can create/edit jobs
-    today = datetime.date.today()
-    show_previous = False
-    if year and month:
-        start_date = datetime.date(year=year, month=month, day=1)
-        show_previous = start_date.replace(day=1) + relativedelta(months=-1)
-    else:
-        start_date = today
-    until = start_date.replace(day=1) + relativedelta(months=2)
-    jobs = Job.objects.filter(time__date__gte=start_date, time__date__lt=until).order_by('time')
-
-    show_next = False
-    if Job.objects.filter(time__date__gte=until).exists():
-        show_next=until
-
-    areas = ActivityArea.objects.filter(
-        Q(jobtype__recuringjob__time__date__gte=today) | Q(onetimejob__time__date__gte=today)
-    ).distinct().order_by('name')
-
-    return render(request, 'cal2/job_calendar.html', {
-        'jobs': jobs,
-        'show_next': show_next,
-        'show_previous': show_previous,
-        'areas': areas,
-        'months': get_job_month_range(today),
-    })
-
-
-@login_required
-def partial_jobs_by_month(request, year, month):
-    # TODO: Deduplicate with above
-    today = datetime.date.today()
-    start_date = max(datetime.date(year=year, month=month, day=1), today)
-    until = start_date.replace(day=1) + relativedelta(months=1)
+    start_date = today = datetime.date.today()
+    if year is not None and month is not None:
+        start_date = max(datetime.date(year=year, month=month, day=1), today)
+    until = start_date.replace(day=1) + relativedelta(months=1 if partial else 2)
     jobs = Job.objects.filter(time__date__gte=start_date, time__date__lt=until).order_by('time')
 
     show_previous = False
@@ -132,12 +103,26 @@ def partial_jobs_by_month(request, year, month):
 
     show_next = False
     if Job.objects.filter(time__date__gte=until).exists():
-        show_next = until
+        show_next=until
 
-    return render(request, 'cal2/snippets/content.html', {
+    context = {
         'jobs': jobs,
         'show_next': show_next,
         'show_previous': show_previous,
+    }
+
+    if partial:
+        return render(request, 'cal2/snippets/content.html', context)
+
+    # if loading full page, get data for toolbar
+    areas = ActivityArea.objects.filter(
+        Q(jobtype__recuringjob__time__date__gte=today) | Q(onetimejob__time__date__gte=today)
+    ).distinct().order_by('name')
+
+    return render(request, 'cal2/job_calendar.html', {
+        'areas': areas,
+        'months': get_job_month_range(today),
+        **context,
     })
 
 
