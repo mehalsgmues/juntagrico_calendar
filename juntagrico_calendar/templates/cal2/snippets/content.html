@@ -3,6 +3,12 @@
 {% load juntagrico.config %}
 {% load i18n %}
 
+<div id="jobs_calendar_loader" class="my-3 text-center d-none">
+    <div class="spinner-border" role="status">
+        <span class="sr-only">{% trans "Lädt..." %}</span>
+    </div>
+</div>
+
 <div id="jobs_calendar">
     {% if show_previous %}
         <div id="load_previous_jobs" class="text-center">

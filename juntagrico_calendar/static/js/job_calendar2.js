@@ -163,9 +163,24 @@ function load_calendar() {
 }
 
 function init_calendar() {
+    // highlight today
     $('.calendar-month td').removeClass('calendar-today')
     let today = new Date()
     $('.calendar-month-' + today.getFullYear() + '-' + (today.getMonth() + 1) + ' .calendar-day-' + today.getDate()).addClass('calendar-today')
+
+    // show spinner if new page loads
+    $('.calendar-month a').off('click.calendar').on('click.calendar', function() {
+        let link = $(this)
+        let query = link.attr('href').split('#').pop()
+        if (query && $('#' + query).length) {
+            // ensure that page is not reloaded unnecessarily
+            link.attr('href', '#' + query)
+        } else {
+            // Show loader and let new page load
+            $('#jobs_calendar').hide()
+            $('#jobs_calendar_loader').removeClass('d-none')
+        }
+    })
 }
 
 function update_month_button() {
