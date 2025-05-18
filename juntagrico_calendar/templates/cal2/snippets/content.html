@@ -15,7 +15,7 @@
             <a href="{% url 'jobs-by-month' show_previous.year show_previous.month %}"
                data-url="{% url 'partial-jobs-by-month' show_previous.year show_previous.month %}"
                class="btn btn-outline-primary btn-lg">
-                {% trans "Ältere Einsätze" %}
+                {% trans "ältere Einsätze" %}
             </a>
             <div class="spinner-border d-none" role="status">
               <span class="sr-only">{% trans "Lädt..." %}</span>
@@ -30,39 +30,39 @@
             <div id="job-month-{{ month.grouper }}-{{ year.grouper }}"
                  class="job-month job-month-{{ month.grouper }} mb-5"
                  data-title="{{ month.grouper }}" data-year="{{ year.grouper }}">
-                <div class="job-month-title text-center mt-5">
+                <div class="job-month-title text-center {% if compact %}mt-1{% else %}mt-5{% endif %}">
                     <p class="display-4 job-month-title-text">{{ month.grouper }}</p>
                 </div>
                 {% regroup month.list by time|get_local_date as jobs_by_day %}
                 {% for day in jobs_by_day %}
                     <div class="job-day job-day-{{ day.grouper|date:'w' }} mt-4"
                          id="job-day-{{ day.grouper|date:'Y-n-j' }}">
-                        <div class="job-day-title float-left d-none"> {# TODO: cleanup #}
-                            <strong>{{ day.grouper|date:'D' }}</strong>
-                            <br>
-                            {{ day.grouper|date:'j' }}.
-                        </div>
                         <div class="text-center mb-4 job-day-header">
                             <h4>
                                 {{ day.grouper|date:'l j. F Y'|upper }}
                             </h4>
                         </div>
+                        <div class="text-center no-day-jobs">
+                            {% blocktrans %}Keine passenden Einsätze an diesem Tag{% endblocktrans %}
+                        </div>
                         {% for job in day.list %}
                             {% with status=job.status_percentage %}
                                 {% ifchanged %}
-                                    {% if job.time|get_local_hour >= 12 %}
+                                    {% if not compact and job.time|get_local_hour >= 12 %}
                                         <div class="text-center mb-3 job-day-sep">
                                             <i class="fa-regular fa-sun"></i>
                                         </div>
                                     {% endif %}
                                 {% endifchanged %}
-                                <div class="job-details mb-3 card{% if status == 100 %} job-full{% endif %}{% if job.started %} job-started{% endif %}"
+                                <div class="job-details mb-3 card{% if status == 100 and not job.infinite_slots %} job-full{% endif %}{% if job.started %} job-started{% endif %}{% if job.canceled %} job-canceled{% endif %}"
                                      data-start-time="{{ job.time|get_local_hour|unlocalize }}"
                                      data-end-time="{{ job.end_time|get_local_hour|unlocalize }}"
                                      data-free-slots="{{ job.free_slots }}"
                                      data-area="{{ job.type.activityarea.id }}">
                                     <div class="card-body">
-                                        {% if status == 100 %}
+                                        {% if job.canceled %}
+                                            <i class="fa-solid fa-circle-xmark float-left text-danger"></i>
+                                        {% elif status == 100 and not job.infinite_slots %}
                                             <i class="job-full-icon fa-solid fa-circle-check float-left text-success"></i>
                                         {% endif %}
                                         <div class="row">
@@ -86,7 +86,11 @@
                                             <div class="col-lg-9 position-static">
                                                 <p class="job-title h4 mb-1 mb-lg-0 card-title">
                                                     <a href="{% url 'job' job.id %}" class="stretched-link"
-                                                        {% if job.type.activityarea.core %}title="{% trans "Kernbereich" %}"{% endif %}>
+                                                        {% if job.canceled %}
+                                                            title="{% trans "Abgesagt" %}"
+                                                        {% elif job.type.activityarea.core %}
+                                                            title="{% trans "Kernbereich" %}"
+                                                        {% endif %}>
                                                         {{ job.type.get_name }}
                                                     </a>
                                                 </p>
@@ -119,18 +123,18 @@
                                                     bg-success
                                                 {% endif %}"
                                              role="progressbar"
-                                             style="width: {{ status|floatformat:0 }}%;"
+                                             style="width: {{ status|floatformat:0 }}%; {% if job.infinite_slots %}max-width:91%;{% endif %}"
                                              aria-valuenow="{{ job.occupied_slots }}"
                                              aria-valuemin="0"
                                              aria-valuemax="{{ job.slots }}">
                                             <span>
-                                                <strong>{{ job.occupied_slots }} / {{ job.slots }}</strong>
+                                                <strong>{{ job.occupied_slots }} / {% if job.infinite_slots %}&infin;{% else %}{{ job.slots }}{% endif %}</strong>
                                                 {% blocktrans count s=job.slots %}Person{% plural %}Personen{% endblocktrans %}
                                             </span>
                                         </div>
                                     </div>
                                 </div>
-                                {% if forloop.last and job.time|get_local_hour < 12 %}
+                                {% if not compact and forloop.last and job.time|get_local_hour < 12 %}
                                     <div class="text-center mb-3 job-day-sep">
                                         <i class="fa-regular fa-sun"></i>
                                     </div>
@@ -142,12 +146,14 @@
                                 {% endif %}
                             {% endwith %}
                         {% endfor %}
-                        <div class="text-center mb-5 job-day-sep">
-                            <i class="fa-regular fa-moon"></i>
-                        </div>
+                        {% if not compact %}
+                            <div class="text-center mb-5 job-day-sep">
+                                <i class="fa-regular fa-moon"></i>
+                            </div>
+                        {% endif %}
                     </div>
                 {% endfor %}
-                <div class="text-center no-jobs">
+                <div class="text-center no-jobs" style="display: none;">
                     {% blocktrans with month=month.grouper %}Keine passenden Einsätze im {{ month }}{% endblocktrans %}
                 </div>
             </div>
@@ -161,7 +167,7 @@
             <a href="{% url 'jobs-by-month' show_next.year show_next.month %}"
                data-url="{% url 'partial-jobs-by-month' show_next.year show_next.month %}"
                class="btn btn-primary btn-lg">
-                {% trans "Mehr anzeigen" %}
+                {% trans "mehr anzeigen" %}
             </a>
             <div class="spinner-border d-none" role="status">
               <span class="sr-only">{% trans "Lädt..." %}</span>

@@ -1,0 +1,67 @@
+{% load cal.time %}
+{% load juntagrico.config %}
+{% load juntagrico.widgets %}
+{% load i18n %}
+
+{# BETA banner #}
+<div class="alert alert-info">
+    <h5>{% trans "Wie findest du diese neue Ansicht?" %}</h5>
+    <p>
+        {% trans "Sieht etwas seltsam aus oder funktioniert nicht wie erwartet?" %}
+        <br>
+        <a href="mailto:beta@juntagrico.org" class="text-info">{% trans "Sende mir deine Rückmeldung per E-Mail." %}</a>
+    </p>
+    <a href="{% url 'job-calendar-switch' 0 %}" class="btn btn-info">
+        <i class="fa-solid fa-shuffle"></i>
+        {% trans "Zurück zur klassischen Ansicht wechseln" %}
+    </a>
+</div>
+{# end BETA banner #}
+
+<div id="jobs-header" class="py-2">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="my-next-jobs mb-3 card">
+                <div class="card-header">
+                    <strong>
+                        {% trans "Deine geplanten Einsätze" %}
+                    </strong>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% next_jobs request as planned_jobs %}
+                    {% for job in planned_jobs %}
+                        <li class="list-group-item">
+                            <a href="{% url 'job' job.id %}" {% if job.canceled %}class="canceled"{% endif %}>
+                                {{ job.type.get_name }}
+                            </a>
+                            -
+                            <span class="time">
+                                {{ job.time|date:"d.m H:i" }}-{{ job.end_time|date:"H:i" }}
+                            </span>
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item disabled">{% trans "Du hast keine Einsätze geplant" %}</li>
+                    {% endfor %}
+                </ul>
+                <div class="card-footer">
+                    <a href="{% url 'memberjobs' %}">
+                        {% trans "Alle deine Einsätze ansehen" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="my-next-jobs mb-3 card">
+                <div class="card-header">
+                    {% trans "Vergangene Einsätze durchsuchen" %}
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'jobs-archive' %}" class="btn btn-outline-secondary">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        {% trans "Einsatz-Archiv öffnen" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

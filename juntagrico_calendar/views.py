@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Max, Min
 from django.db.models.functions import TruncMonth
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.timezone import template_localtime
@@ -24,6 +24,8 @@ def job_calendar(request):
     """
     Job calendar/agenda view
     """
+    if request.session.get('new_job_calendar', False):
+        return redirect('jobs-preview')
     return render(request, 'cal/job_calendar.html')
 
 
@@ -84,6 +86,12 @@ def jobs_as_json(request):
         for job in jobs
     ]
     return JsonResponse(events, safe=False)
+
+
+@login_required
+def switch_calendar(request, use_new=0):
+    request.session['new_job_calendar'] = use_new != 0
+    return redirect('jobs')
 
 
 @login_required
@@ -160,5 +168,6 @@ def job_archive(request, year=None, month=None):
             'year': year,
             'month': month,
         },
-        'jobs': Job.objects.filter(time__date__year=year, time__date__month=month).order_by('time')
+        'jobs': Job.objects.filter(time__date__year=year, time__date__month=month).order_by('time'),
+        'compact': True,
     })

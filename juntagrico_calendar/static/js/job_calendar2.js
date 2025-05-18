@@ -2,10 +2,15 @@ $(function () {
     // init content
     init_load_more_jobs()
 
-    apply_day_filters()
+    // apply filters, e.g. prefilled search field
+    apply_filters()
 
     // initialize toolbar
     $('#job_search_field').on('change keyup', apply_filters)
+    $('#job_search_clear').on('click', function() {
+        $('#job_search_field').val('').focus()
+        apply_filters()
+    })
 
     init_areas()
 
@@ -230,6 +235,7 @@ function apply_filters() {
             return $(this).find('p').text().toLowerCase().indexOf(search) !== -1
         })
     }
+    $('#job_search_clear').toggleClass('is-empty', search === '')
 
     // filter by area
     let selected_areas = $('#area_inputs input:checked').map(function() {
@@ -307,11 +313,11 @@ function apply_filters() {
 }
 
 function apply_day_filters() {
-    $('.job-day').show()
+    $('.job-day').removeClass('hide-jobs').show()
     $('#weekday_select:has(.btn-primary) .btn-secondary').each(function () {
         $('.job-day-' + $(this).data('weekday')).hide()
     })
-    $('.job-day:not(:has(.job-details:visible))').hide()
+    $('.job-day:not(:has(.job-details:visible))').addClass('hide-jobs')
     $('.no-jobs').each(function() {
         $(this).toggle($(this).siblings(".job-day:visible").length == 0)
     })

@@ -33,22 +33,6 @@
     display: none;
 }
 
-.job-details.border-primary::before {
-    content: '';
-    width: 0;
-    height: 0;
-    border-width: 1.2rem;
-    border-style: solid;
-    border-color: #66cc66 transparent transparent #66cc66;
-    border-radius: .15rem 0 0 0;
-    margin-bottom: -2.4rem;
-}
-
-.job-full.job-details.border-primary::before {
-    border-width: 0;
-    margin-bottom: 0;
-}
-
 .job-full .job-area, .job-full .job-location, .job-full .job-date {
     display: none;
 }
@@ -74,6 +58,14 @@
     color: transparent;
 }
 
+.job-canceled {
+    text-decoration: line-through;
+}
+
+.job-canceled .card-progress {
+    display: none;
+}
+
 .job-day-sep::before,
 .job-day-sep::after {
     background-color: #21252988;
@@ -86,6 +78,21 @@
     margin: 0 3%;
 }
 
+.no-day-jobs {
+    display: none;
+}
+
+.hide-jobs .no-day-jobs {
+    display: block;
+}
+
+.hide-jobs .job-details, .hide-jobs .job-day-sep, .hide-jobs .no-job-sep {
+    display: none;
+}
+
+
+/* calendar dropdown */
+
 #calendar-toolbar {
     position: sticky;
     top: 0;
@@ -94,6 +101,7 @@
 }
 
 .calendar-dot {
+    width: 0.5rem;
     width: 0.5rem;
     height: 0.5rem;
     border-radius: 0.5rem;
@@ -146,6 +154,28 @@
 
 #load_next_jobs:not(:last-child) {
     display: none;
+}
+
+#jobs_calendar_loader {
+    /* ensures, that page doesn't jump up, while new content is loading */
+    min-height: 100vh
+}
+
+
+/* search field */
+#job_search_clear {
+    border-color: #ced4da;
+    background: white;
+    border-left: 0;
+}
+
+#job_search_clear.is-empty {
+    color: transparent;
+    cursor: auto;
+}
+
+#job_search_field {
+    border-right: 0;
 }
 
 /* Archive */

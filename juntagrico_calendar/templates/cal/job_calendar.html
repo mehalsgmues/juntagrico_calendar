@@ -5,7 +5,19 @@
         {% trans "Alle Einsätze im Überblick" %}
     </h3>
 {% endblock %}
+
 {% block content %}
+
+{# BETA banner #}
+<div class="alert alert-info">
+    <h5>{% trans "Neue Ansicht ausprobieren" %}</h5>
+    <a href="{% url 'job-calendar-switch' 1 %}" class="btn btn-info">
+        <i class="fa-solid fa-shuffle"></i>
+        {% trans "Probiere den neuen Einsatz-Kalender aus" %}
+    </a>
+</div>
+{# end BETA banner #}
+
 {% include 'cal/snippets/content_snippet.html' %}
 {% endblock %}
 

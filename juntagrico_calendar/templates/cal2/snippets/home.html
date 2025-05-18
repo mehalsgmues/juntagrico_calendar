@@ -1,0 +1,12 @@
+{% load i18n %}
+{% load cal.widget %}
+
+<h3 id="jobs">
+    {% trans "Offene Arbeitseinsätze" %}
+</h3>
+{% next_jobs %}
+<div class="text-center mb-5">
+    <a href="{% url 'jobs-preview' %}" class="btn btn-primary btn-lg">
+        {% trans "mehr anzeigen" %}
+    </a>
+</div>

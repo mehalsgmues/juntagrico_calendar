@@ -92,6 +92,8 @@ USE_TZ = True
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'APP_DIRS': True,
+        'DIRS': [os.path.join(BASE_DIR, 'test_templates')],
         'OPTIONS': {
             'context_processors': [
                 # Insert your TEMPLATE_CONTEXT_PROCESSORS here or use this
@@ -106,11 +108,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'juntagrico.context_processors.vocabulary',
             ],
-            'loaders': [
-                'django.template.loaders.filesystem.Loader',
-                'django.template.loaders.app_directories.Loader'
-            ],
-            'debug': True
+            'debug': DEBUG
         },
     },
 ]
