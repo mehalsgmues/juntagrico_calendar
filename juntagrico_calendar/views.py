@@ -168,6 +168,6 @@ def job_archive(request, year=None, month=None):
             'year': year,
             'month': month,
         },
-        'jobs': Job.objects.filter(time__date__year=year, time__date__month=month).order_by('time'),
+        'jobs': Job.objects.filter(time__year=year, time__month=month).order_by('time'),
         'compact': True,
     })
