@@ -50,7 +50,7 @@
                                 {% ifchanged %}
                                     {% if not compact and job.time|get_local_hour >= 12 %}
                                         <div class="text-center mb-3 job-day-sep">
-                                            <i class="fa-regular fa-sun"></i>
+                                            <i class="bi bi-sun"></i>
                                         </div>
                                     {% endif %}
                                 {% endifchanged %}
@@ -61,9 +61,9 @@
                                      data-area="{{ job.type.activityarea.id }}">
                                     <div class="card-body">
                                         {% if job.canceled %}
-                                            <i class="fa-solid fa-circle-xmark float-left text-danger"></i>
+                                            <i class="bi bi-x-circle float-left text-danger"></i>
                                         {% elif status == 100 and not job.infinite_slots %}
-                                            <i class="job-full-icon fa-solid fa-circle-check float-left text-success"></i>
+                                            <i class="job-full-icon bi bi-check-circle-fill float-left text-success"></i>
                                         {% endif %}
                                         <div class="row">
                                             <div class="col-10 col-lg-2">
@@ -101,7 +101,7 @@
                                                     <span class="text-muted">{{ job.type.activityarea }}</span>
                                                 </p>
                                                 <p class="job-location mb-0">
-                                                    <i class="fa-solid fa-location-dot"></i>
+                                                    <i class="bi bi-geo-alt-fill"></i>
                                                     {{ job.type.location }}
                                                 </p>
                                             </div>
@@ -136,11 +136,11 @@
                                 </div>
                                 {% if not compact and forloop.last and job.time|get_local_hour < 12 %}
                                     <div class="text-center mb-3 job-day-sep">
-                                        <i class="fa-regular fa-sun"></i>
+                                        <i class="bi bi-sun"></i>
                                     </div>
                                     <div class="text-center mt-5 mb-5 no-job-sep">
-                                        {% with "seedling tree leaf clover water cow bugs worm spider frog dove crow locust dog cat" as nature %}
-                                            <i class="fa-solid fa-{{ nature.split|random }} lead"></i>
+                                        {% with "tree tree-fill leaf leaf-fill water bug flower1 flower2 flower3" as nature %}
+                                            <i class="bi bi-{{ nature.split|random }} lead"></i>
                                         {% endwith %}
                                     </div>
                                 {% endif %}
@@ -148,7 +148,7 @@
                         {% endfor %}
                         {% if not compact %}
                             <div class="text-center mb-5 job-day-sep">
-                                <i class="fa-regular fa-moon"></i>
+                                <i class="bi bi-moon-fill"></i>
                             </div>
                         {% endif %}
                     </div>

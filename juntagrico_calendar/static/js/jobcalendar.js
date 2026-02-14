@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // add more info to the title
                 var title_el = $(info.el).find('td.fc-list-item-title')
                 title_el.prepend('<span class="area">'+ ep.area +'</span>')
-                var info_button = $('<span class="info fas fa-info-circle" onclick="return false">')
+                var info_button = $('<span class="info bi bi-info-circle-fill" onclick="return false">')
                 add_tooltip(info_button, info.event)
                 title_el.prepend(info_button)
                 title_el.append('<span class="location">'+ ep.location +'</span>')

@@ -18,8 +18,8 @@
 }
 
 #jobs_calendar .location::before {
-    font-family: "Font Awesome 5 Free";
-    content: "\f105";
+    font-family: "bootstrap-icons";
+    content: "\f285";
     padding-left: 0.3em;
     font-style: normal;
     font-weight: 600;

@@ -17,12 +17,14 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'juntagrico_calendar',
     'juntagrico',
-    'fontawesomefree',
     'import_export',
     'impersonate',
     'adminsortable2',
     'polymorphic',
     'crispy_forms',
+    'crispy_bootstrap4',
+    'django_select2',
+    'djrichtextfield',
 ]
 
 DATABASES = {
@@ -114,8 +116,6 @@ TEMPLATES = [
 ]
 
 LOGIN_REDIRECT_URL = "/"
-
-SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 CRISPY_FAIL_SILENTLY = not DEBUG
