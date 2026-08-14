@@ -194,3 +194,77 @@
 .archive-calendar {
     width: max-content;
 }
+
+/* Compact view */
+.compact .card-body .row *>:not(.d-none) {
+    display: inline-block;
+}
+
+.compact .compact-hide {
+    display: none !important;
+}
+
+.compact .job-month-title {
+    text-align: left !important;
+    margin-top: 0 !important;
+}
+
+.compact .job-day-header {
+    text-align: left !important;
+    margin-bottom: 0.2em !important;
+}
+
+.compact .job-day-header h4 {
+    font-size: 1.2rem !important;
+    margin: 0;
+}
+
+.compact .job-details {
+    margin-bottom: 0.3rem !important;
+}
+
+.compact .card-body {
+    padding: 0.25rem 0.75rem;
+}
+
+.compact .job-time {
+    font-size: 100%;
+    white-space: nowrap;
+}
+
+.compact .job-time-sep {
+    display: inline !important;
+}
+
+.compact .card-progress {
+    height: 3px;
+}
+
+.compact .card-progress .progress-bar span {
+    display: none;
+}
+
+.compact .job-area {
+    float: left;
+    padding-right: 1rem;
+}
+
+.compact .job-title {
+    font-size: 1.125rem;
+}
+
+.compact .job-location {
+    margin-left: 0.5rem;
+}
+
+.compact .job-core {
+    padding: 0;
+}
+
+.compact .job-is-core {
+    padding: 0.25rem 1.25rem;
+}
+
+.compact .no-day-jobs {
+    text-align: left !important;
+}

@@ -22,6 +22,13 @@ $(function () {
         return false
     })
 
+    $('#display_select').on('click', function(e) {
+        $(this).children().toggleClass('btn-secondary').toggleClass('btn-light')
+        $('#jobs_calendar').toggleClass('compact', $('.toggle-compact.btn-secondary').length > 0)
+        e.preventDefault()
+        return false
+    })
+
     $('.calendar-btn').on('show.bs.dropdown', load_calendar)
 
     $(window).on('scroll', update_month_button)
