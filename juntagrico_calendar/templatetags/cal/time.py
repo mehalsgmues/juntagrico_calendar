@@ -67,23 +67,38 @@ def print_calendar(year=None, month=None, mode=''):
     end_date = datetime.date(year, month, calendar.monthrange(year, month)[1])
 
     if archive:
-        jobs = Job.objects.filter(time__date__gte=start_date, time__date__lte=end_date).annotate(
-            date=TruncDay('time__date')
-        ).values_list('date', flat=True)
+        jobs = (
+            Job.objects.filter(time__date__gte=start_date, time__date__lte=end_date)
+            .annotate(date=TruncDay("time__date"))
+            .values_list("date", flat=True)
+        )
         job_status = {date.day: 'badge-dark' for date in jobs}
     else:
         # normal mode doesn't display past jobs
         start_date = max(start_date, today)
         # color dots where assignments are available
-        job_status = Job.objects.filter(time__date__gte=start_date, time__date__lte=end_date).alias(
-            used_slots=Subquery(Assignment.objects.filter(job=OuterRef('pk')).annotate(count=Count('pk')).values('count')[:1]),
-        ).annotate(
-            # Using subquery, because django and/or db doesn't do aggregation of aggregated value.
-            status= F('used_slots') / Cast(F('slots'), output_field=FloatField()),
-            date=TruncDay('time__date')
-        ).values('date').annotate(lowest_status=Min('status', default=0)).values_list('date', 'lowest_status')
+        job_status = (
+            Job.objects.filter(
+                time__date__gte=start_date, time__date__lte=end_date, slots__gt=0
+            )
+            .alias(
+                # Using subquery, because django and/or db doesn't do aggregation of aggregated value.
+                used_slots=Subquery(
+                    Assignment.objects.filter(job=OuterRef("pk"))
+                    .annotate(count=Count("pk"))
+                    .values("count")[:1]
+                ),
+            )
+            .annotate(
+                status=F("used_slots") / Cast(F("slots"), output_field=FloatField()),
+                date=TruncDay("time__date"),
+            )
+            .values("date")
+            .annotate(lowest_status=Min("status", default=0))
+            .values_list("date", "lowest_status")
+        )
         job_status = {
-            date.day: ('badge-danger' if status < 0.25 else 'badge-warning')
+            date.day: ("badge-danger" if status < 0.25 else "badge-warning")
             for date, status in job_status
             if status < 1
         }
