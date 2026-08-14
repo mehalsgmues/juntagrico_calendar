@@ -43,7 +43,7 @@
 }
 
 .job-full .job-time {
-    font-size: .75em;
+    font-size: 100%;
 }
 
 .job-full .job-time-sep {
@@ -141,7 +141,9 @@
 }
 
 .job-core {
-    height: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
 }
 
 .job-started {
@@ -196,7 +198,7 @@
 }
 
 /* Compact view */
-.compact .card-body .row *>:not(.d-none) {
+.compact .job-details:not(.job-full) .row *>:not(.d-none) {
     display: inline-block;
 }
 
@@ -217,6 +219,10 @@
 .compact .job-day-header h4 {
     font-size: 1.2rem !important;
     margin: 0;
+}
+
+.compact .no-day-jobs {
+    text-align: left !important;
 }
 
 .compact .job-details {
@@ -240,31 +246,30 @@
     height: 3px;
 }
 
+.compact .card-progress .progress-bar {
+    min-width: 3rem;
+}
+
+
 .compact .card-progress .progress-bar span {
     display: none;
 }
 
-.compact .job-area {
-    float: left;
-    padding-right: 1rem;
-}
-
-.compact .job-title {
+.compact .job-title, .compact .job-area {
+    margin-right: 0.8rem;
     font-size: 1.125rem;
 }
 
-.compact .job-location {
-    margin-left: 0.5rem;
-}
-
 .compact .job-core {
-    padding: 0;
+    padding: 0.25rem 1.25rem !important;
 }
 
 .compact .job-is-core {
-    padding: 0.25rem 1.25rem;
+    padding: 0.25rem 0;
 }
 
-.compact .no-day-jobs {
-    text-align: left !important;
+@media (max-width: 575px) {
+    .compact .job-area, .compact .job-location {
+        display: none !important;
+    }
 }

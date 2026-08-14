@@ -1,0 +1,12 @@
+{% extends './full.html' %}
+{% load i18n %}
+
+{% block css_classes %}
+    {{ block.super }} job-canceled
+{% endblock %}
+
+{% block icon %}
+    <i class="bi bi-x-circle text-danger pr-3"></i>
+{% endblock %}
+
+{% block help_text %}{% trans "abgesagt" %}{% endblock %}

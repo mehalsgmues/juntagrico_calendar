@@ -1,0 +1,19 @@
+{% extends './card.html' %}
+
+{% block css_classes %}
+    job-full
+{% endblock %}
+
+{% block body %}
+    <div class="text-truncate">
+        {% block icon %}
+            <i class="job-full-icon bi bi-check-circle-fill text-success pr-3"></i>
+        {% endblock %}
+        <span class="job-time mr-2">
+            {{ job.time|date:'TIME_FORMAT' }}&nbsp;-&nbsp;{{ job.end_time|date:'TIME_FORMAT' }}
+        </span>
+        <a href="{% url 'job' job.id %}" class="stretched-link" title="{% block help_text %}{{ job.type.get_name }}{% endblock %}">
+            {{ job.type.get_name }}
+        </a>
+    </div>
+{% endblock %}

@@ -54,89 +54,15 @@
                                         </div>
                                     {% endif %}
                                 {% endifchanged %}
-                                <div class="job-details mb-3 card{% if status == 100 and not job.infinite_slots %} job-full{% endif %}{% if job.started %} job-started{% endif %}{% if job.canceled %} job-canceled{% endif %}"
-                                     data-start-time="{{ job.time|get_local_hour|unlocalize }}"
-                                     data-end-time="{{ job.end_time|get_local_hour|unlocalize }}"
-                                     data-free-slots="{{ job.free_slots }}"
-                                     data-area="{{ job.type.activityarea.id }}">
-                                    <div class="card-body">
-                                        {% if job.canceled %}
-                                            <i class="bi bi-x-circle float-left text-danger"></i>
-                                        {% elif status == 100 and not job.infinite_slots %}
-                                            <i class="job-full-icon bi bi-check-circle-fill float-left text-success"></i>
-                                        {% endif %}
-                                        <div class="row">
-                                            <div class="col-10 col-lg-2">
-                                                <p class="mb-1 text-lg-right">
-                                                    <span class="job-time">
-                                                        <strong>{{ job.time|date:'TIME_FORMAT' }}</strong>
-                                                        <small class="job-time-sep d-lg-none">-</small>
-                                                        <small>{{ job.end_time|date:'TIME_FORMAT' }}</small>
-                                                    </span>
-                                                    <span class="job-date ml-3 ml-lg-0 text-muted compact-hide">
-                                                        {{ job.time|date:'SHORT_DATE_FORMAT' }}
-                                                    </span>
-                                                </p>
-                                            </div>
-                                            <div class="col-2 d-lg-none job-core">
-                                                {% if job.type.activityarea.core %}
-                                                    {% include "./core.html" %}
-                                                {% endif %}
-                                            </div>
-                                            <div class="col-lg-9 position-static">
-                                                <p class="job-title h4 mb-1 mb-lg-0 card-title">
-                                                    <a href="{% url 'job' job.id %}" class="stretched-link"
-                                                        {% if job.canceled %}
-                                                            title="{% trans "Abgesagt" %}"
-                                                        {% elif job.type.activityarea.core %}
-                                                            title="{% trans "Kernbereich" %}"
-                                                        {% endif %}>
-                                                        {{ job.type.get_name }}
-                                                    </a>
-                                                </p>
-                                                {% if job.multiplier != 1 %}
-                                                    {% include "./multiplier.html" %}
-                                                {% endif %}
-                                                <p class="job-area mb-0">
-                                                    <span class="text-muted">{{ job.type.activityarea }}</span>
-                                                </p>
-                                                <p class="job-location mb-0">
-                                                    <i class="bi bi-geo-alt-fill compact-hide"></i>
-                                                    <span class="job-location-name">{{ job.type.location.name }}</span>
-                                                    {% if job.type.location.address %}
-                                                        <span class="job-location-address compact-hide">{{ job.type.location.address }}</span>
-                                                    {% endif %}
-                                                </p>
-                                            </div>
-                                            <div class="col-lg-1 d-none d-lg-block job-core">
-                                                {% if job.type.activityarea.core %}
-                                                    {% include "./core.html" %}
-                                                {% endif %}
-                                            </div>
-                                        </div>
 
-                                    </div>
-                                    <div class="progress card-progress">
-                                        <div class="progress-bar
-                                                {% if status < 25 %}
-                                                    bg-danger
-                                                {% elif status < 100 %}
-                                                    bg-warning
-                                                {% else %}
-                                                    bg-success
-                                                {% endif %}"
-                                             role="progressbar"
-                                             style="width: {{ status|floatformat:0 }}%; {% if job.infinite_slots %}max-width:91%;{% endif %}"
-                                             aria-valuenow="{{ job.occupied_slots }}"
-                                             aria-valuemin="0"
-                                             aria-valuemax="{{ job.slots }}">
-                                            <span>
-                                                <strong>{{ job.occupied_slots }} / {% if job.infinite_slots %}&infin;{% else %}{{ job.slots }}{% endif %}</strong>
-                                                {% blocktrans count s=job.slots %}Person{% plural %}Personen{% endblocktrans %}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
+                                {% if job.canceled %}
+                                    {% include './job/canceled.html' %}
+                                {% elif status == 100 and not job.infinite_slots %}
+                                    {% include './job/full.html' %}
+                                {% else %}
+                                    {% include './job/card.html' %}
+                                {% endif %}
+
                                 {% if not compact and forloop.last and job.time|get_local_hour < 12 %}
                                     <div class="text-center mb-3 job-day-sep compact-hide">
                                         <i class="bi bi-sun"></i>
