@@ -255,7 +255,7 @@
     display: none;
 }
 
-.compact .job-title, .compact .job-area {
+.compact .job-title, .compact .job-area, .compact .job-multiplier {
     margin-right: 0.8rem;
     font-size: 1.125rem;
 }
