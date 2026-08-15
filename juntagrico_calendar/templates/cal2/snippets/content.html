@@ -9,7 +9,7 @@
     </div>
 </div>
 
-<div id="jobs_calendar">
+<div id="jobs_calendar" {% if compact %}class="compact"{% endif %}>
     {% if show_previous %}
         <div id="load_previous_jobs" class="text-center">
             <a href="{% url 'jobs-by-month' show_previous.year show_previous.month %}"
@@ -30,7 +30,7 @@
             <div id="job-month-{{ month.grouper }}-{{ year.grouper }}"
                  class="job-month job-month-{{ month.grouper }} mb-5"
                  data-title="{{ month.grouper }}" data-year="{{ year.grouper }}">
-                <div class="job-month-title text-center {% if compact %}mt-1{% else %}mt-5{% endif %}">
+                <div class="job-month-title text-center {% if archive %}mt-1{% else %}mt-5{% endif %}">
                     <p class="display-4 job-month-title-text">{{ month.grouper }}</p>
                 </div>
                 {% regroup month.list by time|get_local_date as jobs_by_day %}
@@ -48,7 +48,7 @@
                         {% for job in day.list %}
                             {% with status=job.status_percentage %}
                                 {% ifchanged %}
-                                    {% if not compact and job.time|get_local_hour >= 12 %}
+                                    {% if not archive and job.time|get_local_hour >= 12 %}
                                         <div class="text-center mb-3 job-day-sep compact-hide">
                                             <i class="bi bi-sun"></i>
                                         </div>
@@ -63,7 +63,7 @@
                                     {% include './job/card.html' %}
                                 {% endif %}
 
-                                {% if not compact and forloop.last and job.time|get_local_hour < 12 %}
+                                {% if not archive and forloop.last and job.time|get_local_hour < 12 %}
                                     <div class="text-center mb-3 job-day-sep compact-hide">
                                         <i class="bi bi-sun"></i>
                                     </div>
@@ -75,7 +75,7 @@
                                 {% endif %}
                             {% endwith %}
                         {% endfor %}
-                        {% if not compact %}
+                        {% if not archive %}
                             <div class="text-center mb-5 job-day-sep compact-hide">
                                 <i class="bi bi-moon-fill"></i>
                             </div>

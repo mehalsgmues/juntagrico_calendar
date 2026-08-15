@@ -5,7 +5,7 @@ from juntagrico.entity.jobs import Job
 
 
 @register.inclusion_tag('cal2/snippets/content.html')
-def next_jobs(limit=10, compact=True):
+def next_jobs(limit=10, archive=True):
     return {
         'jobs': Job.objects.annotate(
             used_slots=Count('assignment'),
@@ -14,5 +14,5 @@ def next_jobs(limit=10, compact=True):
             canceled=False,
             time__gte=timezone.now(),
         ).order_by('time')[:limit],
-        'compact': compact,
+        'archive': archive,
     }

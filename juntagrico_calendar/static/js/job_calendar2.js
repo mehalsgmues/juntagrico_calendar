@@ -23,8 +23,11 @@ $(function () {
     })
 
     $('#display_select').on('click', function(e) {
-        $(this).children().toggleClass('btn-secondary').toggleClass('btn-light')
-        $('#jobs_calendar').toggleClass('compact', $('.toggle-compact.btn-secondary').length > 0)
+        let $this = $(this)
+        $this.children().toggleClass('btn-secondary').toggleClass('btn-light')
+        let compact = $('.toggle-compact.btn-secondary').length > 0
+        $('#jobs_calendar').toggleClass('compact', compact)
+        $.ajax($this.data('url') + '?compact=' + compact)
         e.preventDefault()
         return false
     })

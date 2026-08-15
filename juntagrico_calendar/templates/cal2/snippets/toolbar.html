@@ -86,9 +86,9 @@
             </div>
 
             <div class="btn-group mr-2 mb-2" id="display_select"
-                 role="group" aria-label="Display selection">
-                <button type="button" class="btn btn-secondary" title="{% trans 'Erweiterte Ansicht' %}"><i class="bi bi-view-list"></i></button>
-                <button type="button" class="btn btn-light toggle-compact" title="{% trans 'Kompakte Ansicht' %}"><i class="bi bi-list"></i></button>
+                 role="group" aria-label="Display selection" data-url="{% url 'job-calendar-compact' %}">
+                <button type="button" class="btn {% if compact %}btn-light{% else %}btn-secondary{% endif %}" title="{% trans 'Erweiterte Ansicht' %}"><i class="bi bi-view-list"></i></button>
+                <button type="button" class="btn {% if compact %}btn-secondary{% else %}btn-light{% endif %} toggle-compact" title="{% trans 'Kompakte Ansicht' %}"><i class="bi bi-list"></i></button>
             </div>
         </div>
     </div>

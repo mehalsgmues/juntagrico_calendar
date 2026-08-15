@@ -6,7 +6,7 @@ from dateutil.relativedelta import relativedelta
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Max, Min
 from django.db.models.functions import TruncMonth
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils import timezone
@@ -95,6 +95,12 @@ def switch_calendar(request, use_new=0):
 
 
 @login_required
+def switch_compact(request):
+    request.session['new_job_calendar_compact'] = request.GET.get('compact') == 'true'
+    return HttpResponse()
+
+
+@login_required
 @highlighted_menu('jobs')
 def job_calendar2(request, year=None, month=None, partial=False):
     """
@@ -118,6 +124,7 @@ def job_calendar2(request, year=None, month=None, partial=False):
         'jobs': jobs,
         'show_next': show_next,
         'show_previous': show_previous,
+        'compact': request.session.get('new_job_calendar_compact', False)
     }
 
     if partial:
@@ -169,5 +176,5 @@ def job_archive(request, year=None, month=None):
             'month': month,
         },
         'jobs': Job.objects.filter(time__year=year, time__month=month).order_by('time'),
-        'compact': True,
+        'archive': True,
     })
